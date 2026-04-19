@@ -26,6 +26,24 @@ See [`TECH_ENFORCEMENT.md`](./TECH_ENFORCEMENT.md) for the full enforcement rule
 
 ---
 
+## Autonomy Boundaries
+
+These are non-negotiable. Stop and ask the user before proceeding when:
+
+- **The task is ambiguous.** If a request can be interpreted in more than one reasonable way, ask which is intended. Do not guess and proceed.
+- **Scope is unclear.** If implementing feature X implies changing unrelated module Y, confirm before touching Y.
+- **An architectural decision is required.** New abstractions, new dependencies, changes to folder structure, or changes to `react-router.config.ts` / `vite.config.ts` require explicit approval.
+- **Deleting files.** Never delete a file without confirming, even if it appears unused.
+- **Security-relevant changes.** Auth logic, environment variable handling, CSP rules, or anything touching user data.
+- **Database or API schema changes.** These can break other consumers.
+
+When in doubt: **ask, don't assume.**
+
+### Handling ambiguity
+If the request is unclear, respond with the ambiguity identified and two or three concrete interpretations. Do not ask open-ended questions — give the user options to choose from.
+
+---
+
 ## Communication Workflow
 
 ### For any task > 10 lines of change:

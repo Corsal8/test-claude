@@ -29,7 +29,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd /Users/corsal/Documents/Dev/test-claude && npm run typecheck 2>&1 | tail -20 || true"
+            "command": "cd /Users/corsal/Documents/Dev/test-claude && npm run typecheck 2>&1 | tail -30"
           }
         ]
       }
