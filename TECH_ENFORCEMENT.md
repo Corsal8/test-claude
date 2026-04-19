@@ -6,9 +6,43 @@ This document is referenced by `CLAUDE.md` and defines precise rules for allowed
 
 ## React Router v7
 
-### Required
-- Use App Router mode (`react-router.config.ts` with `ssr: false` for SPA or `ssr: true` for SSR).
-- Routes are file-based under `app/routes/`.
+### Routing — Config-Based (not file-based)
+All routes are registered explicitly in `app/routes.ts` using helpers from `@react-router/dev/routes`. Route modules live in `app/routes/` but **must** be registered in `routes.ts` to be active.
+
+```ts
+// app/routes.ts
+import { type RouteConfig, index, route, layout, prefix } from "@react-router/dev/routes";
+
+export default [
+  layout("routes/layout.tsx", [
+    index("routes/home.tsx"),
+    route("about", "routes/about.tsx"),
+    ...prefix("blog", [
+      index("routes/blog/index.tsx"),
+      route(":slug", "routes/blog/post.tsx"),
+    ]),
+  ]),
+] satisfies RouteConfig;
+```
+
+Available helpers: `index`, `route`, `layout`, `prefix`, `relative`.
+
+### Rendering Strategy
+`react-router.config.ts` controls rendering per-project:
+- **`ssr: true`** — Server-side rendering (default). Use for dynamic pages.
+- **`prerender`** — Statically pre-render specific routes at build time. Always prefer this for pages with no per-request data.
+
+```ts
+// react-router.config.ts
+export default {
+  ssr: true,
+  prerender: ["/", "/about", "/projects"], // statically built at deploy time
+} satisfies Config;
+```
+
+For fully dynamic routes (e.g., `/blog/:slug`), add them via an async `prerender` function that returns all known paths.
+
+### Data Loading & Mutations
 - Use `loader` / `action` functions for data fetching and mutations — not `useEffect` for initial data.
 - Use `useFetcher` for non-navigation mutations (e.g., liking a post without navigating).
 - Use `<Link>` and `<NavLink>` — never raw `<a>` tags for internal links.
@@ -17,6 +51,7 @@ This document is referenced by `CLAUDE.md` and defines precise rules for allowed
 - Do NOT use React Router v5/v6 patterns (`<Switch>`, `<Route>`, `useHistory`).
 - Do NOT fetch data inside components on mount (`useEffect + fetch`). Use loaders.
 - Do NOT use `navigate()` for form submissions — use `<Form>` with actions.
+- Do NOT manually create route files without registering them in `app/routes.ts`.
 
 ---
 
@@ -82,7 +117,9 @@ This document is referenced by `CLAUDE.md` and defines precise rules for allowed
 
 ```
 app/
-  routes/         # File-based routes
+  routes.ts       # Single source of truth for ALL route registration
+  root.tsx        # Root layout (HTML shell, global providers)
+  routes/         # Route modules — must be registered in routes.ts
   components/     # Shared UI components
     ui/           # Shadcn-generated components (do not edit manually)
   hooks/          # Custom React hooks (use*.ts)

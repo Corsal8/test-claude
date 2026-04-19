@@ -14,7 +14,7 @@ See [`TECH_ENFORCEMENT.md`](./TECH_ENFORCEMENT.md) for the full enforcement rule
 
 | Layer       | Technology                          |
 | ----------- | ----------------------------------- |
-| Framework   | React Router v7 (App Router mode)   |
+| Framework   | React Router v7 (framework mode, config-based routing) |
 | Language    | TypeScript — strict mode, no `any`  |
 | Styling     | Tailwind CSS (mobile-first)         |
 | Components  | Shadcn UI                           |
