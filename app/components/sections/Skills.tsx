@@ -1,5 +1,14 @@
+import { Cloud, Monitor, Server, Wrench } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import type { SkillCategory } from "~/types/skill.types";
+
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  Frontend: Monitor,
+  Backend: Server,
+  "Cloud & Infrastructure": Cloud,
+  "Tools & Practices": Wrench,
+};
 
 interface SkillsProps {
   skills: SkillCategory[];
@@ -13,20 +22,26 @@ export function Skills({ skills }: SkillsProps) {
           <span className="text-sky-400">// </span>Skills & Stack
         </h2>
         <div className="grid gap-8 sm:grid-cols-2">
-          {skills.map((category) => (
-            <div key={category.name}>
-              <h3 className="mb-4 font-mono text-sm font-semibold uppercase tracking-widest text-sky-400">
-                {category.name}
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {category.skills.map((skill) => (
-                  <Badge key={skill} variant="secondary">
-                    {skill}
-                  </Badge>
-                ))}
+          {skills.map((category) => {
+            const Icon = CATEGORY_ICONS[category.name] ?? Wrench;
+            return (
+              <div key={category.name} className="rounded-lg border p-5">
+                <div className="mb-4 flex items-center gap-2">
+                  <Icon className="size-4 text-sky-400" />
+                  <h3 className="font-mono text-sm font-semibold uppercase tracking-widest text-sky-400">
+                    {category.name}
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {category.skills.map((skill) => (
+                    <Badge key={skill} variant="secondary">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
