@@ -40,7 +40,7 @@ jobs:
       - uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: personal-site
-          region: europe-west8
+          region: europe-west1
           source: .
           flags: >-
             --allow-unauthenticated

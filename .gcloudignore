@@ -1,6 +1,8 @@
 .gcloudignore
 .git
 .gitignore
+.github/
+.claude/
 node_modules/
 build/
 .react-router/
@@ -8,3 +10,6 @@ build/
 *.local
 .env*
 gha-creds-*.json
+*.md
+components.json
+gcloudcommands.txt
