@@ -1,5 +1,5 @@
 import type { Route } from "./+types/index";
-import { Link } from "react-router";
+import { href, Link } from "react-router";
 import { getAllPosts } from "~/utils/blog";
 
 export function meta({}: Route.MetaArgs) {
@@ -42,7 +42,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
             {posts.map((post) => (
               <li key={post.slug}>
                 <Link
-                  to={`/blog/${post.slug}`}
+                  to={href("/blog/:slug", { slug: post.slug })}
                   className="group flex items-start justify-between rounded-lg border p-4 transition-colors hover:bg-accent"
                 >
                   <div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { href, Link } from "react-router";
 import { Menu } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
@@ -21,7 +21,7 @@ const NAV_LINKS: NavLink[] = [
   { label: "About", href: "/#about" },
   { label: "Skills", href: "/#skills" },
   { label: "Projects", href: "/#projects" },
-  { label: "Blog", href: "/blog" },
+  { label: "Blog", href: href("/blog") },
   { label: "Contact", href: "/#contact" },
 ];
 

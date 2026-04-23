@@ -1,5 +1,5 @@
 import { Code2, ExternalLink } from "lucide-react";
-import { Link } from "react-router";
+import { href, Link } from "react-router";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -41,7 +41,7 @@ export function Projects({ projects }: ProjectsProps) {
               </CardContent>
               <CardFooter className="gap-2">
                 <Button asChild variant="ghost" size="sm" className="flex-1">
-                  <Link to={`/projects/${project.slug}`}>Details</Link>
+                  <Link to={href("/projects/:slug", { slug: project.slug })}>Details</Link>
                 </Button>
                 {project.githubUrl && (
                   <Button asChild variant="ghost" size="icon-sm">

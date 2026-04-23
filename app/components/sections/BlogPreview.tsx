@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router";
+import { href, Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import type { Post } from "~/types/blog.types";
 
@@ -16,7 +16,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
             <span className="text-sky-400">// </span>From the Blog
           </h2>
           <Button asChild variant="ghost" size="sm">
-            <Link to="/blog">
+            <Link to={href("/blog")}>
               All posts <ArrowRight className="size-4" />
             </Link>
           </Button>
@@ -34,7 +34,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
             {posts.slice(0, 3).map((post) => (
               <li key={post.slug}>
                 <Link
-                  to={`/blog/${post.slug}`}
+                  to={href("/blog/:slug", { slug: post.slug })}
                   className="group flex items-start justify-between rounded-lg border p-4 transition-colors hover:bg-accent"
                 >
                   <div>
