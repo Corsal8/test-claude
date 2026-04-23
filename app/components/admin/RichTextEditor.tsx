@@ -23,6 +23,24 @@ import { cn } from "~/utils/cn";
 
 const lowlight = createLowlight(common);
 
+const LANGUAGES = [
+  { value: "", label: "auto" },
+  { value: "bash", label: "bash" },
+  { value: "css", label: "css" },
+  { value: "dockerfile", label: "dockerfile" },
+  { value: "go", label: "go" },
+  { value: "html", label: "html" },
+  { value: "java", label: "java" },
+  { value: "javascript", label: "javascript" },
+  { value: "json", label: "json" },
+  { value: "markdown", label: "markdown" },
+  { value: "python", label: "python" },
+  { value: "rust", label: "rust" },
+  { value: "sql", label: "sql" },
+  { value: "typescript", label: "typescript" },
+  { value: "yaml", label: "yaml" },
+];
+
 interface RichTextEditorProps {
   content: string;
   onChange: (html: string) => void;
@@ -84,10 +102,13 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
     editor.chain().focus().setImage({ src: url }).run();
   };
 
+  const isInCodeBlock = editor.isActive("codeBlock");
+  const currentLanguage = editor.getAttributes("codeBlock").language ?? "";
+
   return (
     <div className="rounded-md border">
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-0.5 border-b p-1">
+      <div className="flex flex-wrap items-center gap-0.5 border-b p-1">
         <ToolbarButton
           title="Bold"
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -117,7 +138,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
           <Code className="size-4" />
         </ToolbarButton>
 
-        <div className="mx-1 w-px bg-border" />
+        <div className="mx-1 w-px self-stretch bg-border" />
 
         <ToolbarButton
           title="Heading 2"
@@ -138,7 +159,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
           <Heading3 className="size-4" />
         </ToolbarButton>
 
-        <div className="mx-1 w-px bg-border" />
+        <div className="mx-1 w-px self-stretch bg-border" />
 
         <ToolbarButton
           title="Bullet list"
@@ -155,27 +176,59 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
           <ListOrdered className="size-4" />
         </ToolbarButton>
 
-        <div className="mx-1 w-px bg-border" />
+        <div className="mx-1 w-px self-stretch bg-border" />
 
         <ToolbarButton
           title="Code block"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          isActive={editor.isActive("codeBlock")}
+          isActive={isInCodeBlock}
         >
           <Code2 className="size-4" />
         </ToolbarButton>
-        <ToolbarButton title="Horizontal rule" onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+        <ToolbarButton
+          title="Horizontal rule"
+          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+        >
           <Minus className="size-4" />
         </ToolbarButton>
 
-        <div className="mx-1 w-px bg-border" />
+        <div className="mx-1 w-px self-stretch bg-border" />
 
-        <ToolbarButton title="Link" onClick={addLink} isActive={editor.isActive("link")}>
+        <ToolbarButton
+          title="Link"
+          onClick={addLink}
+          isActive={editor.isActive("link")}
+        >
           <LinkIcon className="size-4" />
         </ToolbarButton>
         <ToolbarButton title="Image" onClick={addImage}>
           <ImageIcon className="size-4" />
         </ToolbarButton>
+
+        {/* Language selector — only visible when cursor is inside a code block */}
+        {isInCodeBlock && (
+          <>
+            <div className="mx-1 w-px self-stretch bg-border" />
+            <select
+              value={currentLanguage}
+              onChange={(e) =>
+                editor
+                  .chain()
+                  .focus()
+                  .updateAttributes("codeBlock", { language: e.target.value })
+                  .run()
+              }
+              className="h-6 rounded border bg-background px-1.5 text-xs text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
+              title="Code block language"
+            >
+              {LANGUAGES.map(({ value, label }) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
       </div>
 
       {/* Editor area */}

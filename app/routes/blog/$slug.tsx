@@ -52,7 +52,7 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
         <hr className="mb-8 border-border" />
 
         <article
-          className="prose prose-invert max-w-none space-y-4 leading-relaxed text-muted-foreground [&_h2]:mb-2 [&_h2]:mt-8 [&_h2]:font-mono [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-mono [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-foreground [&_a]:text-sky-400 [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-sm [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-muted [&_pre]:p-4"
+          className="post-content max-w-none leading-relaxed text-muted-foreground [&_h2]:mb-2 [&_h2]:mt-8 [&_h2]:font-mono [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-mono [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-foreground [&_a]:text-sky-400 [&_a]:underline [&_a]:underline-offset-4 [&_blockquote]:border-l-2 [&_blockquote]:pl-4 [&_blockquote]:text-muted-foreground [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-5"
           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
         />
       </div>
