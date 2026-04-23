@@ -1,4 +1,5 @@
 import { useEditor, EditorContent } from "@tiptap/react";
+import { TextSelection } from "@tiptap/pm/state";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
@@ -17,6 +18,7 @@ import {
   ListOrdered,
   Minus,
   Strikethrough,
+  WrapText,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/utils/cn";
@@ -85,6 +87,29 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
       CodeBlockLowlight.configure({ lowlight }),
     ],
     content,
+    editorProps: {
+      handleKeyDown(view, event) {
+        // Mod-Enter inside a code block → insert paragraph below
+        if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+          const { state } = view;
+          const { $from } = state.selection;
+          for (let d = $from.depth; d >= 0; d--) {
+            if ($from.node(d)?.type.name === "codeBlock") {
+              const insertPos = $from.after(d);
+              const tr = state.tr
+                .insert(insertPos, state.schema.nodes.paragraph.create())
+                .setSelection(TextSelection.create(
+                  state.tr.insert(insertPos, state.schema.nodes.paragraph.create()).doc,
+                  insertPos + 1,
+                ));
+              view.dispatch(tr);
+              return true;
+            }
+          }
+        }
+        return false;
+      },
+    },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
 
@@ -100,6 +125,40 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
     const url = window.prompt("Image URL");
     if (!url) return;
     editor.chain().focus().setImage({ src: url }).run();
+  };
+
+  // Converts only the current paragraph to a code block, ignoring any
+  // multi-block selection that might accidentally include empty lines.
+  const toggleCurrentBlockAsCodeBlock = () => {
+    if (editor.isActive("codeBlock")) {
+      editor.chain().focus().toggleCodeBlock().run();
+      return;
+    }
+    const { $from } = editor.state.selection;
+    editor
+      .chain()
+      .focus()
+      .setTextSelection({ from: $from.start($from.depth - 1), to: $from.end($from.depth - 1) })
+      .toggleCodeBlock()
+      .run();
+  };
+
+  // Inserts a paragraph immediately after the current code block.
+  const addParagraphAfterCodeBlock = () => {
+    editor.chain().focus().command(({ state, tr, dispatch }) => {
+      const { $from } = state.selection;
+      for (let d = $from.depth; d >= 0; d--) {
+        if ($from.node(d)?.type.name === "codeBlock") {
+          const insertPos = $from.after(d);
+          if (dispatch) {
+            tr.insert(insertPos, state.schema.nodes.paragraph.create());
+            tr.setSelection(TextSelection.create(tr.doc, insertPos + 1));
+          }
+          return true;
+        }
+      }
+      return false;
+    }).run();
   };
 
   const isInCodeBlock = editor.isActive("codeBlock");
@@ -180,7 +239,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
 
         <ToolbarButton
           title="Code block"
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+          onClick={toggleCurrentBlockAsCodeBlock}
           isActive={isInCodeBlock}
         >
           <Code2 className="size-4" />
@@ -205,7 +264,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
           <ImageIcon className="size-4" />
         </ToolbarButton>
 
-        {/* Language selector — only visible when cursor is inside a code block */}
+        {/* Code block controls — only visible when cursor is inside a code block */}
         {isInCodeBlock && (
           <>
             <div className="mx-1 w-px self-stretch bg-border" />
@@ -227,6 +286,12 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
                 </option>
               ))}
             </select>
+            <ToolbarButton
+              title="Insert paragraph below (Mod+Enter)"
+              onClick={addParagraphAfterCodeBlock}
+            >
+              <WrapText className="size-4" />
+            </ToolbarButton>
           </>
         )}
       </div>
@@ -234,7 +299,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
       {/* Editor area */}
       <EditorContent
         editor={editor}
-        className="min-h-64 px-4 py-3 text-sm [&_.ProseMirror]:outline-none [&_.ProseMirror_h2]:mb-2 [&_.ProseMirror_h2]:mt-6 [&_.ProseMirror_h2]:text-xl [&_.ProseMirror_h2]:font-bold [&_.ProseMirror_h3]:mb-2 [&_.ProseMirror_h3]:mt-4 [&_.ProseMirror_h3]:text-lg [&_.ProseMirror_h3]:font-semibold [&_.ProseMirror_p]:mb-3 [&_.ProseMirror_ul]:mb-3 [&_.ProseMirror_ul]:list-disc [&_.ProseMirror_ul]:pl-5 [&_.ProseMirror_ol]:mb-3 [&_.ProseMirror_ol]:list-decimal [&_.ProseMirror_ol]:pl-5 [&_.ProseMirror_code]:rounded [&_.ProseMirror_code]:bg-muted [&_.ProseMirror_code]:px-1 [&_.ProseMirror_code]:text-xs [&_.ProseMirror_pre]:mb-3 [&_.ProseMirror_pre]:rounded-lg [&_.ProseMirror_pre]:bg-muted [&_.ProseMirror_pre]:p-3 [&_.ProseMirror_blockquote]:border-l-2 [&_.ProseMirror_blockquote]:pl-4 [&_.ProseMirror_blockquote]:text-muted-foreground [&_.ProseMirror_a]:text-sky-400 [&_.ProseMirror_a]:underline [&_.ProseMirror_img]:max-w-full [&_.ProseMirror_img]:rounded"
+        className="min-h-64 px-4 py-3 text-sm [&_.ProseMirror]:outline-none [&_.ProseMirror_h2]:mb-2 [&_.ProseMirror_h2]:mt-6 [&_.ProseMirror_h2]:text-xl [&_.ProseMirror_h2]:font-bold [&_.ProseMirror_h3]:mb-2 [&_.ProseMirror_h3]:mt-4 [&_.ProseMirror_h3]:text-lg [&_.ProseMirror_h3]:font-semibold [&_.ProseMirror_p]:mb-1.5 [&_.ProseMirror_ul]:mb-2 [&_.ProseMirror_ul]:list-disc [&_.ProseMirror_ul]:pl-5 [&_.ProseMirror_ol]:mb-2 [&_.ProseMirror_ol]:list-decimal [&_.ProseMirror_ol]:pl-5 [&_.ProseMirror_code]:rounded [&_.ProseMirror_code]:bg-muted [&_.ProseMirror_code]:px-1 [&_.ProseMirror_code]:text-xs [&_.ProseMirror_pre]:mb-2 [&_.ProseMirror_pre]:rounded-lg [&_.ProseMirror_pre]:bg-muted [&_.ProseMirror_pre]:p-3 [&_.ProseMirror_blockquote]:border-l-2 [&_.ProseMirror_blockquote]:pl-4 [&_.ProseMirror_blockquote]:text-muted-foreground [&_.ProseMirror_a]:text-sky-400 [&_.ProseMirror_a]:underline [&_.ProseMirror_img]:max-w-full [&_.ProseMirror_img]:rounded"
       />
     </div>
   );
