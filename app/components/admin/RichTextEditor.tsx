@@ -138,7 +138,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
     editor
       .chain()
       .focus()
-      .setTextSelection({ from: $from.start($from.depth - 1), to: $from.end($from.depth - 1) })
+      .setTextSelection({ from: $from.start($from.depth), to: $from.end($from.depth) })
       .toggleCodeBlock()
       .run();
   };
