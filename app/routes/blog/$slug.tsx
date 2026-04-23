@@ -2,7 +2,7 @@ import type { Route } from "./+types/$slug";
 import { getPostBySlug } from "~/db/posts";
 import { sanitizePostContent } from "~/utils/sanitize.server";
 
-export async function meta({ data }: Route.MetaArgs) {
+export function meta({ data }: Route.MetaArgs) {
   if (!data) return [{ title: "Post Not Found" }];
   return [
     { title: `${data.post.title} — Your Name` },

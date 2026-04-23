@@ -12,6 +12,7 @@ import type { Route } from "./+types/root";
 import { Navbar } from "~/components/layout/Navbar";
 import { Footer } from "~/components/layout/Footer";
 import "./app.css";
+import "highlight.js/styles/github-dark-dimmed.css";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
