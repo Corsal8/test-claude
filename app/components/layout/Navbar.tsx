@@ -56,12 +56,12 @@ export function Navbar() {
         <ul className="hidden items-center gap-6 md:flex">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
+              <Link
+                to={link.href}
                 className="text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -91,13 +91,13 @@ export function Navbar() {
                 <ul className="flex flex-col gap-1">
                   {NAV_LINKS.map((link) => (
                     <li key={link.href}>
-                      <a
-                        href={link.href}
+                      <Link
+                        to={link.href}
                         className="block rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                         onClick={() => setMobileOpen(false)}
                       >
                         {link.label}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>

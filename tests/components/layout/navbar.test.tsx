@@ -38,12 +38,11 @@ describe("Navbar", () => {
     expect(screen.getByRole("banner").className).toContain("bg-transparent");
   });
 
-  it("adds backdrop styles after scrolling", () => {
+  it("adds backdrop styles after scrolling", async () => {
     renderNavbar();
-    fireEvent.scroll(window, { target: { scrollY: 20 } });
-    // Trigger the scroll handler directly
+    Object.defineProperty(window, "scrollY", { value: 20, configurable: true });
     window.dispatchEvent(new Event("scroll"));
-    const header = screen.getByRole("banner");
+    const header = await screen.findByRole("banner");
     expect(header.className).toContain("bg-background/80");
   });
 });
