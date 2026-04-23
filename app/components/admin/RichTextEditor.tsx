@@ -127,20 +127,31 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
     editor.chain().focus().setImage({ src: url }).run();
   };
 
-  // Converts only the current paragraph to a code block, ignoring any
-  // multi-block selection that might accidentally include empty lines.
+  // Converts only the current block to/from a code block using a direct
+  // ProseMirror transaction, bypassing toggleCodeBlock which expands to
+  // include adjacent empty blocks.
   const toggleCurrentBlockAsCodeBlock = () => {
+    const { state } = editor;
+    const { $from } = state.selection;
+
     if (editor.isActive("codeBlock")) {
-      editor.chain().focus().toggleCodeBlock().run();
+      for (let d = $from.depth; d >= 0; d--) {
+        const node = $from.node(d);
+        if (node?.type.name === "codeBlock") {
+          const pos = $from.before(d);
+          const paragraph = state.schema.nodes.paragraph.create(null, node.content);
+          editor.view.dispatch(state.tr.replaceWith(pos, pos + node.nodeSize, paragraph));
+          return;
+        }
+      }
       return;
     }
-    const { $from } = editor.state.selection;
-    editor
-      .chain()
-      .focus()
-      .setTextSelection({ from: $from.start($from.depth), to: $from.end($from.depth) })
-      .toggleCodeBlock()
-      .run();
+
+    const node = $from.node($from.depth);
+    if (!node || !node.isBlock || $from.depth === 0) return;
+    const pos = $from.before($from.depth);
+    const codeBlock = state.schema.nodes.codeBlock.create(null, node.content);
+    editor.view.dispatch(state.tr.replaceWith(pos, pos + node.nodeSize, codeBlock));
   };
 
   // Inserts a paragraph immediately after the current code block.
