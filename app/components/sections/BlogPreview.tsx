@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { href, Link } from "react-router";
 import { Button } from "~/components/ui/button";
-import type { Post } from "~/types/blog.types";
+import type { Post } from "~/db/schema";
 
 interface BlogPreviewProps {
   posts: Post[];
@@ -32,7 +32,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
         ) : (
           <ul className="space-y-3">
             {posts.slice(0, 3).map((post) => (
-              <li key={post.slug}>
+              <li key={post.id}>
                 <Link
                   to={href("/blog/:slug", { slug: post.slug })}
                   className="group flex items-start justify-between rounded-lg border p-4 transition-colors hover:bg-accent"
@@ -46,7 +46,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
                     </p>
                   </div>
                   <time className="ml-4 mt-1 shrink-0 text-xs text-muted-foreground">
-                    {new Date(post.date).toLocaleDateString("en-US", {
+                    {post.createdAt.toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "short",
                       day: "numeric",

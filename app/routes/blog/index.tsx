@@ -1,6 +1,6 @@
 import type { Route } from "./+types/index";
 import { href, Link } from "react-router";
-import { getAllPosts } from "~/utils/blog";
+import { getAllPosts } from "~/db/posts";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -13,8 +13,8 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export function loader() {
-  return { posts: getAllPosts() };
+export async function loader() {
+  return { posts: await getAllPosts() };
 }
 
 export default function BlogIndex({ loaderData }: Route.ComponentProps) {
@@ -40,7 +40,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
         ) : (
           <ul className="space-y-3">
             {posts.map((post) => (
-              <li key={post.slug}>
+              <li key={post.id}>
                 <Link
                   to={href("/blog/:slug", { slug: post.slug })}
                   className="group flex items-start justify-between rounded-lg border p-4 transition-colors hover:bg-accent"
@@ -64,7 +64,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                     </div>
                   </div>
                   <time className="ml-4 mt-1 shrink-0 text-xs text-muted-foreground">
-                    {new Date(post.date).toLocaleDateString("en-US", {
+                    {post.createdAt.toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "short",
                       day: "numeric",

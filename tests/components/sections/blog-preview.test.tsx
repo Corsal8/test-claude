@@ -2,16 +2,19 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { MemoryRouter } from "react-router";
 import { BlogPreview } from "~/components/sections/BlogPreview";
-import type { Post } from "~/types/blog.types";
+import type { Post } from "~/db/schema";
 
 const makePosts = (count: number): Post[] =>
   Array.from({ length: count }, (_, i) => ({
+    id: String(i + 1),
     slug: `post-${i + 1}`,
     title: `Post ${i + 1}`,
     description: `Description ${i + 1}`,
-    date: `2026-01-0${i + 1}`,
+    content: "",
     tags: ["react"],
     published: true,
+    createdAt: new Date(`2026-01-0${i + 1}`),
+    updatedAt: new Date(`2026-01-0${i + 1}`),
   }));
 
 const renderPreview = (posts: Post[]) =>

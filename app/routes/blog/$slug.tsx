@@ -1,7 +1,8 @@
 import type { Route } from "./+types/$slug";
-import { getPostComponent, getPostMeta } from "~/utils/blog";
+import { getPostBySlug } from "~/db/posts";
+import { sanitizePostContent } from "~/utils/sanitize.server";
 
-export function meta({ data }: Route.MetaArgs) {
+export async function meta({ data }: Route.MetaArgs) {
   if (!data) return [{ title: "Post Not Found" }];
   return [
     { title: `${data.post.title} — Your Name` },
@@ -9,15 +10,14 @@ export function meta({ data }: Route.MetaArgs) {
   ];
 }
 
-export function loader({ params }: Route.LoaderArgs) {
-  const post = getPostMeta(params.slug);
-  if (!post) throw new Response("Not Found", { status: 404 });
-  return { post };
+export async function loader({ params }: Route.LoaderArgs) {
+  const post = await getPostBySlug(params.slug);
+  if (!post || !post.published) throw new Response("Not Found", { status: 404 });
+  return { post, sanitizedContent: sanitizePostContent(post.content) };
 }
 
 export default function BlogPost({ loaderData }: Route.ComponentProps) {
-  const { post } = loaderData;
-  const PostContent = getPostComponent(post.slug);
+  const { post, sanitizedContent } = loaderData;
 
   return (
     <main className="px-4 pb-16 pt-24">
@@ -25,7 +25,7 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-3 text-sm text-muted-foreground">
             <time>
-              {new Date(post.date).toLocaleDateString("en-US", {
+              {post.createdAt.toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -51,11 +51,10 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
 
         <hr className="mb-8 border-border" />
 
-        {PostContent ? (
-          <article className="space-y-4 leading-relaxed text-muted-foreground [&_h2]:mb-2 [&_h2]:mt-8 [&_h2]:font-mono [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-mono [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-foreground [&_a]:text-sky-400 [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-sm [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-muted [&_pre]:p-4">
-            <PostContent />
-          </article>
-        ) : null}
+        <article
+          className="prose prose-invert max-w-none space-y-4 leading-relaxed text-muted-foreground [&_h2]:mb-2 [&_h2]:mt-8 [&_h2]:font-mono [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-mono [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-foreground [&_a]:text-sky-400 [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-sm [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-muted [&_pre]:p-4"
+          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+        />
       </div>
     </main>
   );

@@ -7,7 +7,7 @@ import { Projects } from "~/components/sections/Projects";
 import { Skills } from "~/components/sections/Skills";
 import { projects } from "~/data/projects";
 import { skills } from "~/data/skills";
-import { getAllPosts } from "~/utils/blog";
+import { getAllPosts } from "~/db/posts";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -20,8 +20,8 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export function loader() {
-  return { posts: getAllPosts() };
+export async function loader() {
+  return { posts: await getAllPosts() };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {

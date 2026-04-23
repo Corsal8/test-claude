@@ -2,19 +2,22 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { MemoryRouter } from "react-router";
 import BlogIndex from "~/routes/blog/index";
-import type { Post } from "~/types/blog.types";
+import type { Post } from "~/db/schema";
 
-vi.mock("~/utils/blog", () => ({
-  getAllPosts: vi.fn(() => []),
+vi.mock("~/db/posts", () => ({
+  getAllPosts: vi.fn(async () => []),
 }));
 
 const mockPost: Post = {
+  id: "1",
   slug: "test-post",
   title: "Test Post Title",
   description: "A test post description",
-  date: "2026-01-15",
+  content: "<p>Content</p>",
   tags: ["react", "typescript"],
   published: true,
+  createdAt: new Date("2026-01-15"),
+  updatedAt: new Date("2026-01-15"),
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,9 +62,8 @@ describe("Blog index route", () => {
 
   it("post links to the correct slug", () => {
     renderBlogIndex([mockPost]);
-    expect(screen.getByRole("link", { name: /Test Post Title/i })).toHaveAttribute(
-      "href",
-      "/blog/test-post"
-    );
+    expect(
+      screen.getByRole("link", { name: /Test Post Title/i })
+    ).toHaveAttribute("href", "/blog/test-post");
   });
 });

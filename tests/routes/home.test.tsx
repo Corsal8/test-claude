@@ -2,19 +2,22 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { MemoryRouter } from "react-router";
 import Home from "~/routes/home";
-import type { Post } from "~/types/blog.types";
+import type { Post } from "~/db/schema";
 
-vi.mock("~/utils/blog", () => ({
-  getAllPosts: vi.fn(() => []),
+vi.mock("~/db/posts", () => ({
+  getAllPosts: vi.fn(async () => []),
 }));
 
 const mockPost: Post = {
+  id: "1",
   slug: "test-post",
   title: "Test Post",
   description: "A test post",
-  date: "2026-01-01",
+  content: "<p>Hello</p>",
   tags: ["react"],
   published: true,
+  createdAt: new Date("2026-01-01"),
+  updatedAt: new Date("2026-01-01"),
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
