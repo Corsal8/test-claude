@@ -1,6 +1,7 @@
 import type { Route } from "./+types/login";
 import { Form, redirect } from "react-router";
 import { createAdminSession, getSession } from "~/utils/session.server";
+import { getEnv } from "~/utils/env.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request);
@@ -12,7 +13,7 @@ export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const password = formData.get("password");
 
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if (password !== getEnv().ADMIN_PASSWORD) {
     return { error: "Invalid password" };
   }
 

@@ -1,37 +1,43 @@
 import { createCookieSessionStorage, redirect } from "react-router";
+import type { SessionStorage } from "react-router";
+import { getEnv } from "~/utils/env.server";
 
-if (!process.env.SESSION_SECRET) {
-  throw new Error("SESSION_SECRET environment variable is not set");
+let _storage: SessionStorage<{ admin: boolean }> | undefined;
+
+function getStorage() {
+  if (!_storage) {
+    const env = getEnv();
+    _storage = createCookieSessionStorage({
+      cookie: {
+        name: "__session",
+        httpOnly: true,
+        path: "/",
+        sameSite: "lax",
+        secrets: [env.SESSION_SECRET],
+        secure: env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      },
+    });
+  }
+  return _storage;
 }
 
-const sessionStorage = createCookieSessionStorage({
-  cookie: {
-    name: "__session",
-    httpOnly: true,
-    path: "/",
-    sameSite: "lax",
-    secrets: [process.env.SESSION_SECRET],
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-  },
-});
-
 export async function getSession(request: Request) {
-  return sessionStorage.getSession(request.headers.get("Cookie"));
+  return getStorage().getSession(request.headers.get("Cookie"));
 }
 
 export async function createAdminSession(redirectTo: string) {
-  const session = await sessionStorage.getSession();
+  const session = await getStorage().getSession();
   session.set("admin", true);
   return redirect(redirectTo, {
-    headers: { "Set-Cookie": await sessionStorage.commitSession(session) },
+    headers: { "Set-Cookie": await getStorage().commitSession(session) },
   });
 }
 
 export async function destroyAdminSession(request: Request) {
   const session = await getSession(request);
   return redirect("/admin/login", {
-    headers: { "Set-Cookie": await sessionStorage.destroySession(session) },
+    headers: { "Set-Cookie": await getStorage().destroySession(session) },
   });
 }
 
