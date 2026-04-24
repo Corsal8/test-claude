@@ -39,6 +39,7 @@ const ALLOWED_ATTRIBUTES: sanitizeHtml.IOptions["allowedAttributes"] = {
 
 function decodeEntities(raw: string): string {
   return raw
+    .replace(/<br\s*\/?>/gi, "\n") // Lexical uses <br> for line breaks inside CodeNode
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
@@ -69,12 +70,19 @@ function highlightCodeBlocks(html: string): string {
       hljsHighlight(lang, rawCode, match),
   );
 
-  // Pass 2: Lexical format — <code class="language-X" ...>...</code> (no <pre> wrapper).
+  // Pass 2: Lexical format with language — <code class="language-X" spellcheck="false">...</code>.
   // Only matches class="language-..." (not "hljs language-..." already handled above).
   result = result.replace(
     /<code\b[^>]*\bclass="language-([^"]*)"[^>]*>([\s\S]*?)<\/code>/gi,
     (match, lang: string, rawCode: string) =>
       hljsHighlight(lang, rawCode, match),
+  );
+
+  // Pass 3: Lexical format without language — <code spellcheck="false">...</code>.
+  // Applies auto-detection and wraps in <pre> so it renders as a block.
+  result = result.replace(
+    /<code\b[^>]*\bspellcheck="false"[^>]*>([\s\S]*?)<\/code>/gi,
+    (match, rawCode: string) => hljsHighlight(undefined, rawCode, match),
   );
 
   return result;
