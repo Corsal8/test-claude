@@ -1,4 +1,5 @@
 import { href, Link } from "react-router";
+import { useTranslation } from "~/context/SettingsContext";
 import type { Project } from "~/types/project.types";
 
 interface ProjectsProps {
@@ -6,15 +7,17 @@ interface ProjectsProps {
 }
 
 export function Projects({ projects }: ProjectsProps) {
+  const t = useTranslation();
+
   return (
     <section id="projects" className="py-28 px-10 bg-muted">
       <div className="mx-auto max-w-[1200px]">
         <div className="mb-16" data-reveal>
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
-            04 — Work
+            {t.projects.label}
           </span>
           <h2 className="font-display font-extrabold text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] tracking-[-0.03em] mt-3">
-            Selected Projects
+            {t.projects.heading}
           </h2>
         </div>
 
@@ -54,7 +57,7 @@ export function Projects({ projects }: ProjectsProps) {
                     to={href("/projects/:slug", { slug: project.slug })}
                     className="font-mono text-[0.68rem] tracking-[0.06em] uppercase bg-brand text-brand-fg px-3.5 py-1.5 rounded-[2px] font-medium hover:brightness-110 transition-all"
                   >
-                    Details
+                    {t.projects.details}
                   </Link>
                   {project.githubUrl && (
                     <a
@@ -63,7 +66,7 @@ export function Projects({ projects }: ProjectsProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      ↗ Source
+                      {t.projects.source}
                     </a>
                   )}
                   {project.liveUrl && (
@@ -73,7 +76,7 @@ export function Projects({ projects }: ProjectsProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      ↗ Live
+                      {t.projects.live}
                     </a>
                   )}
                 </div>

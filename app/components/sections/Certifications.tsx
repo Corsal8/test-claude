@@ -1,3 +1,4 @@
+import { useTranslation } from "~/context/SettingsContext";
 import type { Certification } from "~/types/certification.types";
 
 interface CertificationsProps {
@@ -5,15 +6,17 @@ interface CertificationsProps {
 }
 
 export function Certifications({ certifications }: CertificationsProps) {
+  const t = useTranslation();
+
   return (
     <section id="certifications" className="py-28 px-10">
       <div className="mx-auto max-w-[1200px]">
         <div className="mb-16" data-reveal>
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
-            03 — Certifications
+            {t.certifications.label}
           </span>
           <h2 className="font-display font-extrabold text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] tracking-[-0.03em] mt-3">
-            Credentials
+            {t.certifications.heading}
           </h2>
         </div>
 
@@ -51,7 +54,7 @@ export function Certifications({ certifications }: CertificationsProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Verify →
+                    {t.certifications.verify}
                   </a>
                 </div>
               </div>
@@ -67,7 +70,7 @@ export function Certifications({ certifications }: CertificationsProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Verify →
+                  {t.certifications.verify}
                 </a>
               </div>
             </div>

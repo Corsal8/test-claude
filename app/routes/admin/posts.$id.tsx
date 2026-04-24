@@ -8,6 +8,7 @@ import { getDb } from "~/db/client";
 import { posts } from "~/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "~/utils/session.server";
+import { useTranslation } from "~/context/SettingsContext";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   await requireAdmin(request);
@@ -70,6 +71,7 @@ export default function PostEditor({
   const { post } = loaderData;
   const navigation = useNavigation();
   const saving = navigation.state === "submitting";
+  const t = useTranslation();
 
   const [content, setContent] = useState(post?.content ?? "");
 
@@ -83,10 +85,10 @@ export default function PostEditor({
               to="/admin"
               className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground hover:text-brand transition-colors mb-4 inline-block"
             >
-              ← Posts
+              {t.admin.editor.backToPosts}
             </Link>
             <h1 className="font-display font-extrabold text-[clamp(2rem,4vw,3rem)] tracking-[-0.03em] leading-tight">
-              {post ? "Edit post" : "New post"}
+              {post ? t.admin.editor.editPost : t.admin.editor.newPost}
             </h1>
           </div>
         </div>
@@ -98,7 +100,7 @@ export default function PostEditor({
                 htmlFor="title"
                 className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground"
               >
-                Title
+                {t.admin.editor.title}
               </label>
               <input
                 id="title"
@@ -114,7 +116,7 @@ export default function PostEditor({
                 htmlFor="slug"
                 className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground"
               >
-                Slug
+                {t.admin.editor.slug}
               </label>
               <input
                 id="slug"
@@ -131,7 +133,7 @@ export default function PostEditor({
               htmlFor="description"
               className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground"
             >
-              Description
+              {t.admin.editor.description}
             </label>
             <textarea
               id="description"
@@ -147,9 +149,9 @@ export default function PostEditor({
               htmlFor="tags"
               className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground"
             >
-              Tags{" "}
+              {t.admin.editor.tags}{" "}
               <span className="normal-case tracking-normal opacity-60">
-                (comma-separated)
+                {t.admin.editor.tagsHint}
               </span>
             </label>
             <input
@@ -163,7 +165,7 @@ export default function PostEditor({
 
           <div className="flex flex-col gap-1.5">
             <span className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground">
-              Content
+              {t.admin.editor.content}
             </span>
             <RichTextEditor content={content} onChange={setContent} />
             <input type="hidden" name="content" value={content} />
@@ -179,7 +181,7 @@ export default function PostEditor({
                 className="size-4 accent-[var(--brand)]"
               />
               <span className="font-mono text-[0.72rem] tracking-[0.06em] uppercase text-muted-foreground">
-                Publish
+                {t.admin.editor.publish}
               </span>
             </label>
 
@@ -194,7 +196,7 @@ export default function PostEditor({
                 disabled={saving}
                 className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] bg-brand text-brand-fg font-medium hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                {saving ? "Saving…" : "Save"}
+                {saving ? t.admin.editor.saving : t.admin.editor.save}
               </button>
             </div>
           </div>

@@ -2,6 +2,7 @@ import type { Route } from "./+types/$slug";
 import { Link } from "react-router";
 import { getPostBySlug } from "~/db/posts";
 import { sanitizePostContent } from "~/utils/sanitize.server";
+import { useTranslation } from "~/context/SettingsContext";
 
 export function meta({ data }: Route.MetaArgs) {
   if (!data) return [{ title: "Post Not Found" }];
@@ -19,6 +20,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function BlogPost({ loaderData }: Route.ComponentProps) {
   const { post, sanitizedContent } = loaderData;
+  const t = useTranslation();
 
   return (
     <main className="px-10 pt-36 pb-20">
@@ -28,13 +30,13 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
           to="/blog"
           className="inline-flex items-center gap-2 font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground hover:text-brand transition-colors mb-12"
         >
-          ← Back to blog
+          {t.blog.backToBlog}
         </Link>
 
         {/* Eyebrow: date + tags */}
         <div className="flex items-center gap-3 flex-wrap mb-6">
           <time className="font-mono text-[0.65rem] tracking-[0.08em] text-muted-foreground">
-            {post.createdAt.toLocaleDateString("en-US", {
+            {post.createdAt.toLocaleDateString(t.blog.dateLocale, {
               year: "numeric",
               month: "long",
               day: "numeric",

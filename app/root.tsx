@@ -11,6 +11,8 @@ import { ThemeProvider } from "next-themes";
 import type { Route } from "./+types/root";
 import { Navbar } from "~/components/layout/Navbar";
 import { Footer } from "~/components/layout/Footer";
+import { SettingsProvider } from "~/context/SettingsContext";
+import { defaultLocale, translations, type Locale } from "~/i18n";
 import "./app.css";
 import "highlight.js/styles/github-dark-dimmed.css";
 
@@ -27,6 +29,19 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+const VALID_LOCALES = new Set<string>(Object.keys(translations));
+
+function parseLangCookie(cookieHeader: string): Locale {
+  const match = cookieHeader.match(/settings\.language=([^;,\s]+)/);
+  const value = match?.[1]?.trim();
+  return value && VALID_LOCALES.has(value) ? (value as Locale) : defaultLocale;
+}
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const lang = parseLangCookie(request.headers.get("Cookie") ?? "");
+  return { lang };
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
@@ -42,9 +57,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <Navbar />
           {children}
-          <Footer />
         </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
@@ -53,8 +66,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
-  return <Outlet />;
+export default function App({ loaderData }: Route.ComponentProps) {
+  return (
+    <SettingsProvider initialLang={loaderData.lang}>
+      <Navbar />
+      <Outlet />
+      <Footer />
+    </SettingsProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

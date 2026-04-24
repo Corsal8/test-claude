@@ -1,3 +1,5 @@
+import { useTranslation } from "~/context/SettingsContext";
+
 interface ContactLink {
   label: string;
   href: string;
@@ -61,12 +63,14 @@ const CONTACT_LINKS: ContactLink[] = [
 ];
 
 export function Contact() {
+  const t = useTranslation();
+
   return (
     <section id="contact" className="py-28 px-10 bg-muted">
       <div className="mx-auto max-w-[1200px]">
         <div className="mb-16" data-reveal>
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
-            06 — Contact
+            {t.contact.label}
           </span>
         </div>
 
@@ -75,14 +79,14 @@ export function Contact() {
           data-reveal
           data-reveal-delay="1"
         >
-          Let's build
+          {t.contact.headingLine1}
           <br />
-          something{" "}
+          {t.contact.headingLine2}
           <span className="underline decoration-brand underline-offset-2 decoration-[0.06em]">
-            great
+            {t.contact.headingHighlight}
           </span>
           <br />
-          together.
+          {t.contact.headingLine3}
         </h2>
 
         <div className="flex flex-wrap gap-3" data-reveal data-reveal-delay="2">

@@ -1,49 +1,33 @@
-const STATS = [
-  { value: "5+", label: "Years of\nexperience" },
-  { value: "30+", label: "Projects\nshipped" },
-  { value: "10+", label: "Technologies\nmastered" },
-];
+import { useTranslation } from "~/context/SettingsContext";
 
 export function About() {
+  const t = useTranslation();
+
   return (
     <section id="about" className="py-28 px-10">
       <div className="mx-auto max-w-[1200px]">
         <div className="mb-16" data-reveal>
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
-            01 — About
+            {t.about.label}
           </span>
           <h2 className="font-display font-extrabold text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] tracking-[-0.03em] mt-3">
-            Who I am
+            {t.about.heading}
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-start">
-          <div className="space-y-5 text-[1.05rem] leading-[1.75] text-muted-foreground" data-reveal data-reveal-delay="1">
-            <p>
-              I'm a <strong className="text-foreground font-medium">full-stack engineer</strong> and{" "}
-              <strong className="text-foreground font-medium">cloud architect</strong> with a passion for building{" "}
-              <strong className="text-foreground font-medium">robust, scalable systems</strong>. I work across the{" "}
-              <strong className="text-foreground font-medium">entire stack</strong> — from designing pixel-perfect UIs
-              to architecting <strong className="text-foreground font-medium">distributed cloud infrastructure</strong>.
-            </p>
-            <p>
-              I specialise in translating{" "}
-              <strong className="text-foreground font-medium">complex business requirements</strong> into elegant
-              technical solutions. Whether it's a{" "}
-              <strong className="text-foreground font-medium">real-time data pipeline</strong>, a{" "}
-              <strong className="text-foreground font-medium">microservices architecture</strong>, or a{" "}
-              <strong className="text-foreground font-medium">polished user interface</strong> — I care deeply about
-              the craft at every layer.
-            </p>
-            <p>
-              When I'm not coding, I'm exploring new technologies,{" "}
-              <strong className="text-foreground font-medium">contributing to open source</strong>, and occasionally{" "}
-              <strong className="text-foreground font-medium">writing about software engineering</strong>.
-            </p>
+          <div
+            className="space-y-5 text-[1.05rem] leading-[1.75] text-muted-foreground [&_strong]:text-foreground [&_strong]:font-medium"
+            data-reveal
+            data-reveal-delay="1"
+          >
+            <p>{t.about.p1()}</p>
+            <p>{t.about.p2()}</p>
+            <p>{t.about.p3()}</p>
           </div>
 
           <div className="flex flex-col" data-reveal data-reveal-delay="2">
-            {STATS.map(({ value, label }) => (
+            {t.about.stats.map(({ value, label }) => (
               <div
                 key={label}
                 className="flex items-baseline gap-6 py-7 border-b border-border first:border-t"

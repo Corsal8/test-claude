@@ -2,6 +2,7 @@ import type { Route } from "./+types/login";
 import { Form, redirect } from "react-router";
 import { createAdminSession, getSession } from "~/utils/session.server";
 import { getEnv } from "~/utils/env.server";
+import { useTranslation } from "~/context/SettingsContext";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request);
@@ -21,15 +22,17 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function AdminLogin({ actionData }: Route.ComponentProps) {
+  const t = useTranslation();
+
   return (
     <main className="flex min-h-screen items-center justify-center px-10">
       <div className="w-full max-w-[360px]">
         <div className="mb-10">
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
-            Admin
+            {t.admin.label}
           </span>
           <h1 className="font-display font-extrabold text-3xl tracking-[-0.02em] mt-2">
-            Sign in
+            {t.admin.login.heading}
           </h1>
         </div>
 
@@ -39,7 +42,7 @@ export default function AdminLogin({ actionData }: Route.ComponentProps) {
               htmlFor="password"
               className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground"
             >
-              Password
+              {t.admin.login.password}
             </label>
             <input
               id="password"
@@ -53,7 +56,7 @@ export default function AdminLogin({ actionData }: Route.ComponentProps) {
 
           {actionData?.error && (
             <p className="font-mono text-[0.75rem] text-destructive">
-              {actionData.error}
+              {t.admin.login.invalidPassword}
             </p>
           )}
 
@@ -61,7 +64,7 @@ export default function AdminLogin({ actionData }: Route.ComponentProps) {
             type="submit"
             className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] bg-brand text-brand-fg font-medium hover:brightness-110 transition-all"
           >
-            Sign in
+            {t.admin.login.submit}
           </button>
         </Form>
       </div>

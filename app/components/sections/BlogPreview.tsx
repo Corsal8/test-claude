@@ -1,12 +1,13 @@
 import { href, Link } from "react-router";
+import { useTranslation } from "~/context/SettingsContext";
 import type { Post } from "~/db/schema";
 
 interface BlogPreviewProps {
   posts: Post[];
 }
 
-function formatDate(date: Date) {
-  return date.toLocaleDateString("en-US", {
+function formatDate(date: Date, locale: string) {
+  return date.toLocaleDateString(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -14,6 +15,7 @@ function formatDate(date: Date) {
 }
 
 export function BlogPreview({ posts }: BlogPreviewProps) {
+  const t = useTranslation();
   const visible = posts.slice(0, 3);
 
   return (
@@ -21,10 +23,10 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
       <div className="mx-auto max-w-[1200px]">
         <div className="mb-16" data-reveal>
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
-            05 — Writing
+            {t.blog.label}
           </span>
           <h2 className="font-display font-extrabold text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] tracking-[-0.03em] mt-3">
-            From the Blog
+            {t.blog.heading}
           </h2>
         </div>
 
@@ -35,9 +37,9 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
             data-reveal-delay="1"
           >
             <p className="font-mono text-[0.75rem] tracking-[0.12em] uppercase text-muted-foreground">
-              Posts coming soon.
+              {t.blog.emptyTitle}
             </p>
-            <p className="text-sm text-muted-foreground">Stay tuned.</p>
+            <p className="text-sm text-muted-foreground">{t.blog.emptySubtitle}</p>
           </div>
         ) : (
           <>
@@ -55,7 +57,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
                   {/* Meta row */}
                   <div className="flex items-center gap-3">
                     <span className="font-mono text-[0.65rem] tracking-[0.08em] text-muted-foreground">
-                      {formatDate(post.createdAt)}
+                      {formatDate(post.createdAt, t.blog.dateLocale)}
                     </span>
                   </div>
 
@@ -71,7 +73,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
 
                   {/* Read link */}
                   <span className="font-mono text-[0.68rem] tracking-[0.06em] uppercase text-muted-foreground border-b border-border pb-px self-start group-hover:text-brand group-hover:border-brand transition-all">
-                    Read post →
+                    {t.blog.readPost}
                   </span>
                 </Link>
               ))}
@@ -86,7 +88,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
                 to={href("/blog")}
                 className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] border border-border-strong text-foreground hover:border-brand hover:text-brand transition-all"
               >
-                All posts ↗
+                {t.blog.allPosts}
               </Link>
             </div>
           </>

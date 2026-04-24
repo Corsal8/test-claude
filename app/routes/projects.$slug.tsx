@@ -1,6 +1,7 @@
 import type { Route } from "./+types/projects.$slug";
 import { Link } from "react-router";
 import { projects } from "~/data/projects";
+import { useTranslation } from "~/context/SettingsContext";
 
 export function meta({ data }: Route.MetaArgs) {
   if (!data) return [{ title: "Project Not Found" }];
@@ -18,6 +19,7 @@ export function loader({ params }: Route.LoaderArgs) {
 
 export default function ProjectDetail({ loaderData }: Route.ComponentProps) {
   const { project } = loaderData;
+  const t = useTranslation();
 
   return (
     <main className="px-10 pt-36 pb-20">
@@ -27,7 +29,7 @@ export default function ProjectDetail({ loaderData }: Route.ComponentProps) {
           to="/#projects"
           className="inline-flex items-center gap-2 font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground hover:text-brand transition-colors mb-12"
         >
-          ← Back to projects
+          {t.projects.backToProjects}
         </Link>
 
         {/* Tags eyebrow */}
@@ -64,7 +66,7 @@ export default function ProjectDetail({ loaderData }: Route.ComponentProps) {
                 rel="noopener noreferrer"
                 className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] border border-border-strong text-foreground hover:border-brand hover:text-brand transition-all"
               >
-                ↗ View on GitHub
+                {t.projects.viewOnGithub}
               </a>
             )}
             {project.liveUrl && (
@@ -74,7 +76,7 @@ export default function ProjectDetail({ loaderData }: Route.ComponentProps) {
                 rel="noopener noreferrer"
                 className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] bg-brand text-brand-fg font-medium hover:brightness-110 transition-all"
               >
-                ↗ Live Site
+                {t.projects.liveSite}
               </a>
             )}
           </div>

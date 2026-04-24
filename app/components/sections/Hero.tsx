@@ -1,4 +1,8 @@
+import { useTranslation } from "~/context/SettingsContext";
+
 export function Hero() {
+  const t = useTranslation();
+
   return (
     <section
       id="home"
@@ -8,7 +12,7 @@ export function Hero() {
         <div className="flex items-center gap-4 mb-8 fade-up">
           <div className="h-px w-12 bg-brand shrink-0" />
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
-            Full-Stack / Cloud Architect
+            {t.hero.tagline}
           </span>
         </div>
 
@@ -21,22 +25,20 @@ export function Hero() {
 
         <div className="mt-16 flex items-end justify-between flex-wrap gap-8 fade-up delay-2">
           <p className="text-[1.05rem] leading-[1.65] text-muted-foreground max-w-[38ch]">
-            Building scalable systems from pixel to cloud. I design and engineer
-            full-stack applications with a focus on performance, reliability, and
-            developer experience.
+            {t.hero.description}
           </p>
           <div className="flex gap-4 flex-wrap">
             <a
               href="#projects"
               className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] bg-brand text-brand-fg font-medium hover:brightness-110 hover:-translate-y-px transition-all"
             >
-              View Projects ↓
+              {t.hero.viewProjects}
             </a>
             <a
               href="#contact"
               className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] border border-border-strong text-foreground hover:border-brand hover:text-brand transition-all"
             >
-              Get in Touch
+              {t.hero.getInTouch}
             </a>
           </div>
         </div>

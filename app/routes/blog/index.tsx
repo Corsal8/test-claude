@@ -1,6 +1,7 @@
 import type { Route } from "./+types/index";
 import { href, Link } from "react-router";
 import { getAllPosts } from "~/db/posts";
+import { useTranslation } from "~/context/SettingsContext";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -19,6 +20,7 @@ export async function loader() {
 
 export default function BlogIndex({ loaderData }: Route.ComponentProps) {
   const { posts } = loaderData;
+  const t = useTranslation();
 
   return (
     <main className="px-10 pt-36 pb-20">
@@ -26,21 +28,20 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
         {/* Header */}
         <div className="mb-16">
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
-            Writing
+            {t.blog.label}
           </span>
           <h1 className="font-display font-extrabold text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.95] tracking-[-0.03em] mt-3">
-            Blog
+            {t.blog.indexHeading}
           </h1>
           <p className="mt-5 text-muted-foreground text-[1.05rem] leading-[1.65] max-w-[45ch]">
-            Thoughts on full-stack engineering, cloud architecture, and software
-            craft.
+            {t.blog.indexDescription}
           </p>
         </div>
 
         {posts.length === 0 ? (
           <div className="border border-dashed border-border py-16 text-center">
             <p className="font-mono text-[0.75rem] tracking-[0.12em] uppercase text-muted-foreground">
-              Posts coming soon.
+              {t.blog.emptyTitle}
             </p>
           </div>
         ) : (
@@ -72,7 +73,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                   )}
                 </div>
                 <time className="font-mono text-[0.65rem] tracking-[0.06em] text-muted-foreground shrink-0 sm:pt-1">
-                  {post.createdAt.toLocaleDateString("en-US", {
+                  {post.createdAt.toLocaleDateString(t.blog.dateLocale, {
                     year: "numeric",
                     month: "short",
                     day: "numeric",

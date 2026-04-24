@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { href, Link } from "react-router";
+import { Link } from "react-router";
 import {
   Sheet,
   SheetContent,
@@ -8,31 +8,46 @@ import {
   SheetTrigger,
 } from "~/components/ui/sheet";
 import { ThemeToggle } from "~/components/ThemeToggle";
+import { useSettings, useTranslation } from "~/context/SettingsContext";
 import { cn } from "~/utils/cn";
-
-interface NavLink {
-  label: string;
-  href: string;
-}
-
-const NAV_LINKS: NavLink[] = [
-  { label: "About", href: "/#about" },
-  { label: "Skills", href: "/#skills" },
-  { label: "Certifications", href: "/#certifications" },
-  { label: "Projects", href: "/#projects" },
-  { label: "Blog", href: "/#blog" },
-  { label: "Contact", href: "/#contact" },
-];
+import type { Locale } from "~/i18n";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { language, setLanguage } = useSettings();
+  const t = useTranslation();
+
+  const navLinks = [
+    { label: t.nav.about, href: "/#about" },
+    { label: t.nav.skills, href: "/#skills" },
+    { label: t.nav.certifications, href: "/#certifications" },
+    { label: t.nav.projects, href: "/#projects" },
+    { label: t.nav.blog, href: "/#blog" },
+    { label: t.nav.contact, href: "/#contact" },
+  ];
 
   useEffect(() => {
     const handler = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
+
+  const langButton = (locale: Locale, label: string, ariaLabel: string) => (
+    <button
+      className={cn(
+        "font-mono text-[0.68rem] tracking-[0.1em] uppercase px-2 py-1.5 transition-colors",
+        language === locale
+          ? "text-brand font-medium"
+          : "text-muted-foreground hover:text-brand",
+      )}
+      aria-label={ariaLabel}
+      aria-pressed={language === locale}
+      onClick={() => setLanguage(locale)}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <header
@@ -53,7 +68,7 @@ export function Navbar() {
 
         {/* Desktop links */}
         <ul className="hidden md:flex gap-10">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <li key={link.href}>
               <Link
                 to={link.href}
@@ -69,20 +84,9 @@ export function Navbar() {
 
         {/* Desktop utils */}
         <div className="hidden md:flex items-center gap-0 border-l border-border pl-6 ml-6">
-          {/* Language toggle — buttons wired up when i18n is implemented */}
           <div className="flex">
-            <button
-              className="font-mono text-[0.68rem] tracking-[0.1em] uppercase text-brand font-medium px-2 py-1.5 transition-colors"
-              aria-label="Switch to English"
-            >
-              EN
-            </button>
-            <button
-              className="font-mono text-[0.68rem] tracking-[0.1em] uppercase text-muted-foreground px-2 py-1.5 hover:text-brand transition-colors"
-              aria-label="Switch to Italian"
-            >
-              IT
-            </button>
+            {langButton("en", "EN", t.nav.switchToEnglish)}
+            {langButton("it", "IT", t.nav.switchToItalian)}
           </div>
           <div className="w-px h-4 bg-border mx-3" aria-hidden="true" />
           <ThemeToggle />
@@ -93,7 +97,7 @@ export function Navbar() {
           <SheetTrigger asChild>
             <button
               className="md:hidden border border-border text-muted-foreground px-2.5 py-1.5 rounded-[2px] text-sm leading-none hover:border-brand hover:text-brand transition-all"
-              aria-label="Open menu"
+              aria-label={t.nav.openMenu}
             >
               &#9776;
             </button>
@@ -110,7 +114,7 @@ export function Navbar() {
               </SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col">
-              {NAV_LINKS.map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
@@ -124,26 +128,16 @@ export function Navbar() {
             <div className="mt-auto flex flex-col gap-4">
               <div>
                 <p className="font-mono text-[0.62rem] tracking-[0.14em] uppercase text-muted-foreground mb-2">
-                  Language
+                  {t.nav.language}
                 </p>
                 <div className="flex gap-1">
-                  <button
-                    className="font-mono text-[0.68rem] tracking-[0.1em] uppercase text-brand font-medium px-2 py-1.5 transition-colors"
-                    aria-label="Switch to English"
-                  >
-                    EN
-                  </button>
-                  <button
-                    className="font-mono text-[0.68rem] tracking-[0.1em] uppercase text-muted-foreground px-2 py-1.5 hover:text-brand transition-colors"
-                    aria-label="Switch to Italian"
-                  >
-                    IT
-                  </button>
+                  {langButton("en", "EN", t.nav.switchToEnglish)}
+                  {langButton("it", "IT", t.nav.switchToItalian)}
                 </div>
               </div>
               <div>
                 <p className="font-mono text-[0.62rem] tracking-[0.14em] uppercase text-muted-foreground mb-2">
-                  Theme
+                  {t.nav.theme}
                 </p>
                 <ThemeToggle />
               </div>
