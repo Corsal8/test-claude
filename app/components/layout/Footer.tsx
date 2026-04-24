@@ -1,28 +1,13 @@
 export function Footer() {
   return (
-    <footer className="border-t py-8 px-4">
-      <div className="container mx-auto flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
-        <p className="font-mono">&copy; {new Date().getFullYear()} Your Name</p>
-        <p>
-          Built with{" "}
-          <a
-            href="https://reactrouter.com"
-            className="transition-colors hover:text-foreground"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Router
-          </a>{" "}
-          +{" "}
-          <a
-            href="https://tailwindcss.com"
-            className="transition-colors hover:text-foreground"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Tailwind CSS
-          </a>
-        </p>
+    <footer className="border-t-2 border-border-strong py-10 px-10 bg-background">
+      <div className="mx-auto max-w-[1200px] flex items-center justify-between flex-wrap gap-4">
+        <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
+          &copy; {new Date().getFullYear()} Your Name
+        </span>
+        <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
+          Built with React Router + Tailwind CSS
+        </span>
       </div>
     </footer>
   );

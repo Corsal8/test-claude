@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { href, Link } from "react-router";
-import { Menu } from "lucide-react";
-import { Button } from "~/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -20,6 +18,7 @@ interface NavLink {
 const NAV_LINKS: NavLink[] = [
   { label: "About", href: "/#about" },
   { label: "Skills", href: "/#skills" },
+  { label: "Certifications", href: "/#certifications" },
   { label: "Projects", href: "/#projects" },
   { label: "Blog", href: href("/blog") },
   { label: "Contact", href: "/#contact" },
@@ -30,7 +29,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const handler = () => setIsScrolled(window.scrollY > 10);
+    const handler = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
@@ -38,27 +37,27 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        "fixed inset-x-0 top-0 z-50 border-b border-border transition-all duration-300",
         isScrolled
-          ? "border-b bg-background/80 backdrop-blur-md"
-          : "bg-transparent"
+          ? "bg-background/96 backdrop-blur-md"
+          : "bg-background/82 backdrop-blur-sm",
       )}
     >
-      <nav className="container mx-auto flex h-16 items-center justify-between px-4">
+      <nav className="w-full px-10 flex h-16 items-center">
         <Link
           to="/"
-          className="font-mono text-lg font-bold text-sky-400 transition-colors hover:text-sky-300"
+          className="font-display font-extrabold text-[1.05rem] tracking-[-0.02em] text-brand mr-12 shrink-0 whitespace-nowrap"
         >
           &lt;YN /&gt;
         </Link>
 
-        {/* Desktop nav */}
-        <ul className="hidden items-center gap-6 md:flex">
+        {/* Desktop links */}
+        <ul className="hidden md:flex gap-10">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <Link
                 to={link.href}
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="nav-link font-mono text-[0.7rem] tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-200"
               >
                 {link.label}
               </Link>
@@ -66,45 +65,51 @@ export function Navbar() {
           ))}
         </ul>
 
-        <div className="flex items-center gap-1">
-          <ThemeToggle />
+        <div className="flex-1" />
 
-          {/* Mobile drawer trigger */}
-          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden"
-                aria-label="Open menu"
-              >
-                <Menu className="size-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-64">
-              <SheetHeader>
-                <SheetTitle asChild>
-                  <span className="font-mono text-sky-400">&lt;YN /&gt;</span>
-                </SheetTitle>
-              </SheetHeader>
-              <nav className="mt-8">
-                <ul className="flex flex-col gap-1">
-                  {NAV_LINKS.map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        to={link.href}
-                        className="block rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                        onClick={() => setMobileOpen(false)}
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </SheetContent>
-          </Sheet>
+        {/* Desktop theme toggle */}
+        <div className="hidden md:flex items-center border-l border-border pl-6 ml-6">
+          <ThemeToggle />
         </div>
+
+        {/* Mobile trigger */}
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetTrigger asChild>
+            <button
+              className="md:hidden border border-border text-muted-foreground px-2.5 py-1.5 rounded-[2px] text-sm leading-none hover:border-brand hover:text-brand transition-all"
+              aria-label="Open menu"
+            >
+              &#9776;
+            </button>
+          </SheetTrigger>
+          <SheetContent
+            side="left"
+            className="w-[280px] bg-muted border-r border-border p-8 flex flex-col gap-8"
+          >
+            <SheetHeader>
+              <SheetTitle asChild>
+                <span className="font-display font-extrabold text-[1.1rem] tracking-[-0.02em] text-brand">
+                  &lt;YN /&gt;
+                </span>
+              </SheetTitle>
+            </SheetHeader>
+            <nav className="flex flex-col">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="font-mono text-[0.78rem] tracking-[0.1em] uppercase text-muted-foreground hover:text-brand transition-colors py-3.5 border-b border-border first:border-t"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+            <div className="mt-auto">
+              <ThemeToggle />
+            </div>
+          </SheetContent>
+        </Sheet>
       </nav>
     </header>
   );

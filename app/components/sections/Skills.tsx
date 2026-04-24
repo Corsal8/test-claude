@@ -1,13 +1,10 @@
-import { Cloud, Monitor, Server, Wrench } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import { Badge } from "~/components/ui/badge";
 import type { SkillCategory } from "~/types/skill.types";
 
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
-  Frontend: Monitor,
-  Backend: Server,
-  "Cloud & Infrastructure": Cloud,
-  "Tools & Practices": Wrench,
+const CATEGORY_ICONS: Record<string, string> = {
+  Frontend: "◈",
+  Backend: "◎",
+  "Cloud & Infrastructure": "⬡",
+  "Tools & Practices": "◇",
 };
 
 interface SkillsProps {
@@ -16,32 +13,45 @@ interface SkillsProps {
 
 export function Skills({ skills }: SkillsProps) {
   return (
-    <section id="skills" className="bg-muted/30 px-4 py-24">
-      <div className="container mx-auto max-w-4xl">
-        <h2 className="mb-12 font-mono text-3xl font-bold">
-          <span className="text-sky-400">// </span>Skills & Stack
-        </h2>
-        <div className="grid gap-8 sm:grid-cols-2">
-          {skills.map((category) => {
-            const Icon = CATEGORY_ICONS[category.name] ?? Wrench;
-            return (
-              <div key={category.name} className="rounded-lg border p-5">
-                <div className="mb-4 flex items-center gap-2">
-                  <Icon className="size-4 text-sky-400" />
-                  <h3 className="font-mono text-sm font-semibold uppercase tracking-widest text-sky-400">
+    <section id="skills" className="py-28 px-10 bg-muted">
+      <div className="mx-auto max-w-[1200px]">
+        <div className="mb-16" data-reveal>
+          <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
+            02 — Skills
+          </span>
+          <h2 className="font-display font-extrabold text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] tracking-[-0.03em] mt-3">
+            Stack & Tools
+          </h2>
+        </div>
+
+        <div className="border border-border" data-reveal data-reveal-delay="1">
+          <div className="grid grid-cols-1 sm:grid-cols-2">
+            {skills.map((category) => (
+              <div
+                key={category.name}
+                className="p-10 border-b border-border last:border-b-0 sm:border-r sm:even:border-r-0 sm:[&:nth-child(n+3)]:border-b-0 max-sm:border-r-0"
+              >
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="font-mono text-brand text-base">
+                    {CATEGORY_ICONS[category.name] ?? "◇"}
+                  </span>
+                  <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-brand">
                     {category.name}
-                  </h3>
+                  </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {category.skills.map((skill) => (
-                    <Badge key={skill} variant="secondary">
+                    <span
+                      key={skill}
+                      className="font-mono text-[0.7rem] px-2.5 py-1 rounded-[2px] border border-border text-muted-foreground hover:border-brand hover:text-brand transition-all duration-150 cursor-default"
+                    >
                       {skill}
-                    </Badge>
+                    </span>
                   ))}
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </div>
     </section>

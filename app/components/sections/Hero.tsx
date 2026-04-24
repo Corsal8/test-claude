@@ -1,44 +1,44 @@
-import { ArrowDown, Code2, Mail } from "lucide-react";
-import { Button } from "~/components/ui/button";
-
 export function Hero() {
   return (
     <section
       id="home"
-      className="flex min-h-screen flex-col items-center justify-center px-4 pt-16"
+      className="min-h-screen flex flex-col justify-end pb-20 pt-32 px-10"
     >
-      <div className="container mx-auto max-w-4xl text-center">
-        <p className="mb-4 font-mono text-sm uppercase tracking-widest text-sky-400">
-          Full-Stack / Cloud Architect
-        </p>
-        <h1 className="mb-6 font-mono text-5xl font-bold tracking-tight md:text-7xl lg:text-8xl">
-          Your Name
+      <div className="mx-auto w-full max-w-[1200px]">
+        <div className="flex items-center gap-4 mb-8 fade-up">
+          <div className="h-px w-12 bg-brand shrink-0" />
+          <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
+            Full-Stack / Cloud Architect
+          </span>
+        </div>
+
+        <h1 className="font-display font-extrabold leading-[0.92] tracking-[-0.03em] text-[clamp(4rem,11vw,10rem)] fade-up delay-1">
+          Your
+          <br />
+          <span className="text-brand">Name</span>
+          <span className="hero-cursor" aria-hidden="true" />
         </h1>
-        <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground md:text-xl">
-          Building scalable systems from pixel to cloud. I design and engineer
-          full-stack applications with a focus on performance, reliability, and
-          developer experience.
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <Button asChild size="lg">
-            <a href="#projects">
-              View Projects <ArrowDown className="size-4" />
-            </a>
-          </Button>
-          <Button asChild variant="outline" size="lg">
+
+        <div className="mt-16 flex items-end justify-between flex-wrap gap-8 fade-up delay-2">
+          <p className="text-[1.05rem] leading-[1.65] text-muted-foreground max-w-[38ch]">
+            Building scalable systems from pixel to cloud. I design and engineer
+            full-stack applications with a focus on performance, reliability, and
+            developer experience.
+          </p>
+          <div className="flex gap-4 flex-wrap">
             <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#projects"
+              className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] bg-brand text-brand-fg font-medium hover:brightness-110 hover:-translate-y-px transition-all"
             >
-              <Code2 className="size-4" /> GitHub
+              View Projects ↓
             </a>
-          </Button>
-          <Button asChild variant="ghost" size="lg">
-            <a href="mailto:your@email.com">
-              <Mail className="size-4" /> Get in Touch
+            <a
+              href="#contact"
+              className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] border border-border-strong text-foreground hover:border-brand hover:text-brand transition-all"
+            >
+              Get in Touch
             </a>
-          </Button>
+          </div>
         </div>
       </div>
     </section>

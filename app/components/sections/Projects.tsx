@@ -1,15 +1,4 @@
-import { Code2, ExternalLink } from "lucide-react";
 import { href, Link } from "react-router";
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
 import type { Project } from "~/types/project.types";
 
 interface ProjectsProps {
@@ -18,57 +7,83 @@ interface ProjectsProps {
 
 export function Projects({ projects }: ProjectsProps) {
   return (
-    <section id="projects" className="px-4 py-24">
-      <div className="container mx-auto max-w-4xl">
-        <h2 className="mb-12 font-mono text-3xl font-bold">
-          <span className="text-sky-400">// </span>Projects
-        </h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <Card key={project.slug} className="flex flex-col">
-              <CardHeader>
-                <CardTitle className="text-base">{project.title}</CardTitle>
-                <CardDescription>{project.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <div className="flex flex-wrap gap-1.5">
+    <section id="projects" className="py-28 px-10 bg-muted">
+      <div className="mx-auto max-w-[1200px]">
+        <div className="mb-16" data-reveal>
+          <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
+            04 — Work
+          </span>
+          <h2 className="font-display font-extrabold text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] tracking-[-0.03em] mt-3">
+            Selected Projects
+          </h2>
+        </div>
+
+        <div className="flex flex-col">
+          {projects.map((project, i) => (
+            <div
+              key={project.slug}
+              className="grid grid-cols-[2.5rem_1fr] md:grid-cols-[3.5rem_1fr_auto] items-start gap-8 py-10 border-b border-border first:border-t group cursor-default"
+              data-reveal
+              data-reveal-delay={String(i % 3)}
+            >
+              {/* Number */}
+              <span className="font-mono text-[0.72rem] tracking-[0.05em] text-muted-foreground pt-1 group-hover:text-brand transition-colors">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+
+              {/* Content */}
+              <div>
+                <h3 className="font-display font-bold text-[1.4rem] leading-[1.2] mb-2 group-hover:text-brand transition-colors">
+                  {project.title}
+                </h3>
+                <p className="text-[0.92rem] text-muted-foreground leading-[1.6] max-w-[55ch] mb-4">
+                  {project.description}
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-5">
                   {project.tags.map((tag) => (
-                    <Badge key={tag} variant="outline" className="text-xs">
+                    <span
+                      key={tag}
+                      className="font-mono text-[0.65rem] tracking-[0.06em] text-muted-foreground px-2.5 py-1 border border-border rounded-[2px]"
+                    >
                       {tag}
-                    </Badge>
+                    </span>
                   ))}
                 </div>
-              </CardContent>
-              <CardFooter className="gap-2">
-                <Button asChild variant="ghost" size="sm" className="flex-1">
-                  <Link to={href("/projects/:slug", { slug: project.slug })}>Details</Link>
-                </Button>
-                {project.githubUrl && (
-                  <Button asChild variant="ghost" size="icon-sm">
+                <div className="flex items-center gap-3">
+                  <Link
+                    to={href("/projects/:slug", { slug: project.slug })}
+                    className="font-mono text-[0.68rem] tracking-[0.06em] uppercase bg-brand text-brand-fg px-3.5 py-1.5 rounded-[2px] font-medium hover:brightness-110 transition-all"
+                  >
+                    Details
+                  </Link>
+                  {project.githubUrl && (
                     <a
                       href={project.githubUrl}
+                      className="font-mono text-[0.68rem] tracking-[0.06em] uppercase text-muted-foreground border-b border-border pb-px hover:text-foreground hover:border-muted-foreground transition-all"
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`${project.title} source code`}
                     >
-                      <Code2 />
+                      ↗ Source
                     </a>
-                  </Button>
-                )}
-                {project.liveUrl && (
-                  <Button asChild variant="ghost" size="icon-sm">
+                  )}
+                  {project.liveUrl && (
                     <a
                       href={project.liveUrl}
+                      className="font-mono text-[0.68rem] tracking-[0.06em] uppercase text-muted-foreground border-b border-border pb-px hover:text-foreground hover:border-muted-foreground transition-all"
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`${project.title} live site`}
                     >
-                      <ExternalLink />
+                      ↗ Live
                     </a>
-                  </Button>
-                )}
-              </CardFooter>
-            </Card>
+                  )}
+                </div>
+              </div>
+
+              {/* Arrow — desktop only */}
+              <span className="hidden md:block text-[1.2rem] text-brand opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all self-center">
+                ↗
+              </span>
+            </div>
           ))}
         </div>
       </div>
