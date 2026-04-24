@@ -1,7 +1,7 @@
 import type { Route } from "./+types/posts.$id";
 import { Form, redirect, useNavigation } from "react-router";
 import { useState } from "react";
-import { Button } from "~/components/ui/button";
+import { Link } from "react-router";
 import { RichTextEditor } from "~/components/admin/RichTextEditor";
 import { createPost, getPostBySlug, updatePost } from "~/db/posts";
 import { db } from "~/db/client";
@@ -58,7 +58,15 @@ export async function action({ request, params }: Route.ActionArgs) {
   return redirect("/admin");
 }
 
-export default function PostEditor({ loaderData, actionData }: Route.ComponentProps) {
+const fieldClass =
+  "w-full border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-brand rounded-[2px] transition-colors";
+
+const monoFieldClass = `${fieldClass} font-mono`;
+
+export default function PostEditor({
+  loaderData,
+  actionData,
+}: Route.ComponentProps) {
   const { post } = loaderData;
   const navigation = useNavigation();
   const saving = navigation.state === "submitting";
@@ -66,17 +74,30 @@ export default function PostEditor({ loaderData, actionData }: Route.ComponentPr
   const [content, setContent] = useState(post?.content ?? "");
 
   return (
-    <main className="px-4 pb-16 pt-24">
-      <div className="container mx-auto max-w-3xl">
-        <h1 className="mb-8 font-mono text-2xl font-bold">
-          <span className="text-sky-400">// </span>
-          {post ? "Edit post" : "New post"}
-        </h1>
+    <main className="px-10 pt-36 pb-20">
+      <div className="mx-auto max-w-[800px]">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-12">
+          <div>
+            <Link
+              to="/admin"
+              className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground hover:text-brand transition-colors mb-4 inline-block"
+            >
+              ← Posts
+            </Link>
+            <h1 className="font-display font-extrabold text-[clamp(2rem,4vw,3rem)] tracking-[-0.03em] leading-tight">
+              {post ? "Edit post" : "New post"}
+            </h1>
+          </div>
+        </div>
 
-        <Form method="post" className="space-y-5">
+        <Form method="post" className="flex flex-col gap-6">
           <div className="grid gap-5 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <label htmlFor="title" className="text-sm text-muted-foreground">
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="title"
+                className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground"
+              >
                 Title
               </label>
               <input
@@ -84,12 +105,15 @@ export default function PostEditor({ loaderData, actionData }: Route.ComponentPr
                 name="title"
                 required
                 defaultValue={post?.title ?? ""}
-                className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+                className={fieldClass}
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor="slug" className="text-sm text-muted-foreground">
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="slug"
+                className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground"
+              >
                 Slug
               </label>
               <input
@@ -97,15 +121,15 @@ export default function PostEditor({ loaderData, actionData }: Route.ComponentPr
                 name="slug"
                 required
                 defaultValue={post?.slug ?? ""}
-                className="w-full rounded-md border bg-background px-3 py-2 font-mono text-sm outline-none focus:ring-2 focus:ring-ring"
+                className={monoFieldClass}
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <label
               htmlFor="description"
-              className="text-sm text-muted-foreground"
+              className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground"
             >
               Description
             </label>
@@ -114,50 +138,64 @@ export default function PostEditor({ loaderData, actionData }: Route.ComponentPr
               name="description"
               rows={2}
               defaultValue={post?.description ?? ""}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className={fieldClass}
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label htmlFor="tags" className="text-sm text-muted-foreground">
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="tags"
+              className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground"
+            >
               Tags{" "}
-              <span className="text-xs">(comma-separated)</span>
+              <span className="normal-case tracking-normal opacity-60">
+                (comma-separated)
+              </span>
             </label>
             <input
               id="tags"
               name="tags"
               defaultValue={post?.tags.join(", ") ?? ""}
               placeholder="react, typescript, cloud"
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className={monoFieldClass}
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-sm text-muted-foreground">Content</label>
+          <div className="flex flex-col gap-1.5">
+            <span className="font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground">
+              Content
+            </span>
             <RichTextEditor content={content} onChange={setContent} />
             <input type="hidden" name="content" value={content} />
           </div>
 
-          <div className="flex items-center justify-between pt-2">
-            <label className="flex cursor-pointer items-center gap-2 text-sm">
+          {/* Footer: publish toggle + submit */}
+          <div className="flex items-center justify-between pt-2 border-t border-border">
+            <label className="flex cursor-pointer items-center gap-2.5">
               <input
                 type="checkbox"
                 name="published"
                 defaultChecked={post?.published ?? false}
-                className="size-4"
+                className="size-4 accent-[var(--brand)]"
               />
-              Publish
+              <span className="font-mono text-[0.72rem] tracking-[0.06em] uppercase text-muted-foreground">
+                Publish
+              </span>
             </label>
 
-            <div className="flex gap-2">
+            <div className="flex items-center gap-4">
               {actionData?.error && (
-                <p className="self-center text-sm text-destructive">
+                <p className="font-mono text-[0.72rem] text-destructive">
                   {actionData.error}
                 </p>
               )}
-              <Button type="submit" disabled={saving}>
+              <button
+                type="submit"
+                disabled={saving}
+                className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] bg-brand text-brand-fg font-medium hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
                 {saving ? "Saving…" : "Save"}
-              </Button>
+              </button>
             </div>
           </div>
         </Form>

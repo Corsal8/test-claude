@@ -21,59 +21,66 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
   const { posts } = loaderData;
 
   return (
-    <main className="px-4 pb-16 pt-24">
-      <div className="container mx-auto max-w-2xl">
-        <h1 className="mb-4 font-mono text-4xl font-bold">
-          <span className="text-sky-400">// </span>Blog
-        </h1>
-        <p className="mb-12 text-muted-foreground">
-          Thoughts on full-stack engineering, cloud architecture, and software
-          craft.
-        </p>
+    <main className="px-10 pt-36 pb-20">
+      <div className="mx-auto max-w-[800px]">
+        {/* Header */}
+        <div className="mb-16">
+          <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
+            Writing
+          </span>
+          <h1 className="font-display font-extrabold text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.95] tracking-[-0.03em] mt-3">
+            Blog
+          </h1>
+          <p className="mt-5 text-muted-foreground text-[1.05rem] leading-[1.65] max-w-[45ch]">
+            Thoughts on full-stack engineering, cloud architecture, and software
+            craft.
+          </p>
+        </div>
 
         {posts.length === 0 ? (
-          <div className="rounded-lg border border-dashed p-16 text-center">
-            <p className="font-mono text-muted-foreground">
+          <div className="border border-dashed border-border py-16 text-center">
+            <p className="font-mono text-[0.75rem] tracking-[0.12em] uppercase text-muted-foreground">
               Posts coming soon.
             </p>
           </div>
         ) : (
-          <ul className="space-y-3">
+          <div className="flex flex-col">
             {posts.map((post) => (
-              <li key={post.id}>
-                <Link
-                  to={href("/blog/:slug", { slug: post.slug })}
-                  className="group flex items-start justify-between rounded-lg border p-4 transition-colors hover:bg-accent"
-                >
-                  <div>
-                    <p className="font-medium transition-colors group-hover:text-sky-400">
-                      {post.title}
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {post.description}
-                    </p>
-                    <div className="mt-2 flex gap-2">
+              <Link
+                key={post.id}
+                to={href("/blog/:slug", { slug: post.slug })}
+                className="group grid grid-cols-1 sm:grid-cols-[1fr_auto] items-start gap-4 py-8 border-b border-border first:border-t hover:opacity-80 transition-opacity"
+              >
+                <div>
+                  <h2 className="font-display font-bold text-[1.15rem] leading-[1.25] mb-2 group-hover:text-brand transition-colors">
+                    {post.title}
+                  </h2>
+                  <p className="text-[0.9rem] text-muted-foreground leading-[1.6] mb-3">
+                    {post.description}
+                  </p>
+                  {post.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
                       {post.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+                          className="font-mono text-[0.65rem] tracking-[0.06em] text-muted-foreground px-2 py-0.5 border border-border rounded-[2px]"
                         >
                           {tag}
                         </span>
                       ))}
                     </div>
-                  </div>
-                  <time className="ml-4 mt-1 shrink-0 text-xs text-muted-foreground">
-                    {post.createdAt.toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </time>
-                </Link>
-              </li>
+                  )}
+                </div>
+                <time className="font-mono text-[0.65rem] tracking-[0.06em] text-muted-foreground shrink-0 sm:pt-1">
+                  {post.createdAt.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </time>
+              </Link>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </main>

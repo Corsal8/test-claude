@@ -1,8 +1,5 @@
 import type { Route } from "./+types/projects.$slug";
-import { ArrowLeft, Code2, ExternalLink } from "lucide-react";
 import { Link } from "react-router";
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
 import { projects } from "~/data/projects";
 
 export function meta({ data }: Route.MetaArgs) {
@@ -23,57 +20,70 @@ export default function ProjectDetail({ loaderData }: Route.ComponentProps) {
   const { project } = loaderData;
 
   return (
-    <main className="px-4 pb-16 pt-24">
-      <div className="container mx-auto max-w-2xl">
-        <Button asChild variant="ghost" size="sm" className="-ml-2 mb-8">
-          <Link to="/#projects">
-            <ArrowLeft className="size-4" /> Back to projects
-          </Link>
-        </Button>
+    <main className="px-10 pt-36 pb-20">
+      <div className="mx-auto max-w-[800px]">
+        {/* Back link */}
+        <Link
+          to="/#projects"
+          className="inline-flex items-center gap-2 font-mono text-[0.68rem] tracking-[0.08em] uppercase text-muted-foreground hover:text-brand transition-colors mb-12"
+        >
+          ← Back to projects
+        </Link>
 
-        <h1 className="mb-3 font-mono text-3xl font-bold md:text-4xl">
+        {/* Tags eyebrow */}
+        {project.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-6">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className="font-mono text-[0.65rem] tracking-[0.06em] text-muted-foreground px-2.5 py-1 border border-border rounded-[2px]"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Title */}
+        <h1 className="font-display font-extrabold text-[clamp(2rem,5vw,3.5rem)] leading-[1.0] tracking-[-0.03em] mb-4">
           {project.title}
         </h1>
-        <p className="mb-6 text-lg text-muted-foreground">
+
+        {/* Short description */}
+        <p className="text-[1.05rem] leading-[1.65] text-muted-foreground mb-10">
           {project.description}
         </p>
 
-        <div className="mb-8 flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <Badge key={tag} variant="secondary">
-              {tag}
-            </Badge>
-          ))}
-        </div>
-
-        <div className="mb-12 flex gap-3">
-          {project.githubUrl && (
-            <Button asChild variant="outline">
+        {/* Action links */}
+        {(project.githubUrl || project.liveUrl) && (
+          <div className="flex gap-3 flex-wrap mb-10">
+            {project.githubUrl && (
               <a
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] border border-border-strong text-foreground hover:border-brand hover:text-brand transition-all"
               >
-                <Code2 className="size-4" /> View on GitHub
+                ↗ View on GitHub
               </a>
-            </Button>
-          )}
-          {project.liveUrl && (
-            <Button asChild>
+            )}
+            {project.liveUrl && (
               <a
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] bg-brand text-brand-fg font-medium hover:brightness-110 transition-all"
               >
-                <ExternalLink className="size-4" /> Live Site
+                ↗ Live Site
               </a>
-            </Button>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
-        <hr className="mb-8 border-border" />
+        <div className="h-px bg-border mb-10" />
 
-        <p className="leading-relaxed text-muted-foreground">
+        {/* Long description */}
+        <p className="text-[1.05rem] leading-[1.75] text-muted-foreground whitespace-pre-line">
           {project.longDescription}
         </p>
       </div>

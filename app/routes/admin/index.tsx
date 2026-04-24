@@ -1,7 +1,6 @@
 import type { Route } from "./+types/index";
 import { Form, Link } from "react-router";
-import { PenLine, Plus, Trash2 } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { PenLine, Trash2 } from "lucide-react";
 import { getAllPostsAdmin } from "~/db/posts";
 import { destroyAdminSession, requireAdmin } from "~/utils/session.server";
 
@@ -24,69 +23,84 @@ export default function AdminIndex({ loaderData }: Route.ComponentProps) {
   const { posts } = loaderData;
 
   return (
-    <main className="px-4 pb-16 pt-24">
-      <div className="container mx-auto max-w-3xl">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="font-mono text-3xl font-bold">
-            <span className="text-sky-400">// </span>Posts
-          </h1>
-          <div className="flex items-center gap-2">
-            <Button asChild size="sm">
-              <Link to="/admin/posts/new">
-                <Plus className="size-4" /> New post
-              </Link>
-            </Button>
+    <main className="px-10 pt-36 pb-20">
+      <div className="mx-auto max-w-[800px]">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-12">
+          <div>
+            <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
+              Admin
+            </span>
+            <h1 className="font-display font-extrabold text-[clamp(2rem,4vw,3rem)] tracking-[-0.03em] leading-tight mt-2">
+              Posts
+            </h1>
+          </div>
+          <div className="flex items-center gap-3 pt-2">
+            <Link
+              to="/admin/posts/new"
+              className="font-mono text-[0.72rem] tracking-[0.08em] uppercase px-4 py-2.5 rounded-[2px] bg-brand text-brand-fg font-medium hover:brightness-110 transition-all"
+            >
+              + New post
+            </Link>
             <Form method="post">
               <input type="hidden" name="intent" value="logout" />
-              <Button type="submit" variant="ghost" size="sm">
+              <button
+                type="submit"
+                className="font-mono text-[0.72rem] tracking-[0.08em] uppercase px-4 py-2.5 rounded-[2px] border border-border text-muted-foreground hover:border-brand hover:text-brand transition-all"
+              >
                 Sign out
-              </Button>
+              </button>
             </Form>
           </div>
         </div>
 
         {posts.length === 0 ? (
-          <div className="rounded-lg border border-dashed p-16 text-center">
-            <p className="font-mono text-muted-foreground">No posts yet.</p>
+          <div className="border border-dashed border-border py-16 text-center">
+            <p className="font-mono text-[0.75rem] tracking-[0.12em] uppercase text-muted-foreground">
+              No posts yet.
+            </p>
           </div>
         ) : (
-          <ul className="space-y-2">
+          <div className="flex flex-col">
             {posts.map((post) => (
-              <li
+              <div
                 key={post.id}
-                className="flex items-center justify-between rounded-lg border p-4"
+                className="flex items-center justify-between gap-4 py-5 border-b border-border first:border-t"
               >
-                <div>
-                  <p className="font-medium">{post.title}</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
+                <div className="min-w-0">
+                  <p className="font-display font-semibold text-[0.95rem] leading-snug truncate">
+                    {post.title}
+                  </p>
+                  <p className="font-mono text-[0.62rem] tracking-[0.06em] text-muted-foreground mt-1">
                     {post.published ? (
-                      <span className="text-green-500">Published</span>
+                      <span className="text-brand">Published</span>
                     ) : (
                       <span>Draft</span>
                     )}{" "}
                     · {post.createdAt.toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex gap-1">
-                  <Button asChild variant="ghost" size="icon-sm">
-                    <Link to={`/admin/posts/${post.id}`}>
-                      <PenLine className="size-4" />
-                    </Link>
-                  </Button>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Link
+                    to={`/admin/posts/${post.id}`}
+                    className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-[2px]"
+                    aria-label="Edit post"
+                  >
+                    <PenLine className="size-4" />
+                  </Link>
                   <Form method="post" action={`/admin/posts/${post.id}/delete`}>
-                    <Button
+                    <button
                       type="submit"
-                      variant="ghost"
-                      size="icon-sm"
-                      className="text-destructive hover:text-destructive"
+                      className="p-2 text-muted-foreground hover:text-destructive transition-colors rounded-[2px]"
+                      aria-label="Delete post"
                     >
                       <Trash2 className="size-4" />
-                    </Button>
+                    </button>
                   </Form>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </main>
