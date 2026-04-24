@@ -1,9 +1,9 @@
 import { eq } from "drizzle-orm";
-import { db } from "./client";
+import { getDb } from "./client";
 import { posts } from "./schema";
 
 export async function getAllPosts() {
-  return db
+  return getDb()
     .select()
     .from(posts)
     .where(eq(posts.published, true))
@@ -11,7 +11,7 @@ export async function getAllPosts() {
 }
 
 export async function getPostBySlug(slug: string) {
-  const [post] = await db
+  const [post] = await getDb()
     .select()
     .from(posts)
     .where(eq(posts.slug, slug))
@@ -20,7 +20,7 @@ export async function getPostBySlug(slug: string) {
 }
 
 export async function getAllPostsAdmin() {
-  return db.select().from(posts).orderBy(posts.createdAt);
+  return getDb().select().from(posts).orderBy(posts.createdAt);
 }
 
 export async function createPost(data: {
@@ -31,7 +31,7 @@ export async function createPost(data: {
   tags: string[];
   published: boolean;
 }) {
-  const [post] = await db.insert(posts).values(data).returning();
+  const [post] = await getDb().insert(posts).values(data).returning();
   return post;
 }
 
@@ -44,9 +44,9 @@ export async function updatePost(
     content: string;
     tags: string[];
     published: boolean;
-  }>
+  }>,
 ) {
-  const [post] = await db
+  const [post] = await getDb()
     .update(posts)
     .set({ ...data, updatedAt: new Date() })
     .where(eq(posts.id, id))
@@ -55,5 +55,5 @@ export async function updatePost(
 }
 
 export async function deletePost(id: string) {
-  await db.delete(posts).where(eq(posts.id, id));
+  await getDb().delete(posts).where(eq(posts.id, id));
 }

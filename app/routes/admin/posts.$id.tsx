@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { RichTextEditor } from "~/components/admin/RichTextEditor";
 import { createPost, getPostBySlug, updatePost } from "~/db/posts";
-import { db } from "~/db/client";
+import { getDb } from "~/db/client";
 import { posts } from "~/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "~/utils/session.server";
@@ -12,7 +12,7 @@ import { requireAdmin } from "~/utils/session.server";
 export async function loader({ request, params }: Route.LoaderArgs) {
   await requireAdmin(request);
   if (params.id === "new") return { post: null };
-  const [post] = await db
+  const [post] = await getDb()
     .select()
     .from(posts)
     .where(eq(posts.id, params.id))
