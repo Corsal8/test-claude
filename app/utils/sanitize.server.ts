@@ -39,7 +39,6 @@ const ALLOWED_ATTRIBUTES: sanitizeHtml.IOptions["allowedAttributes"] = {
 
 function decodeEntities(raw: string): string {
   return raw
-    .replace(/<br\s*\/?>/gi, "\n") // Lexical uses <br> for line breaks inside CodeNode
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
@@ -61,28 +60,30 @@ function hljsHighlight(lang: string | undefined, rawCode: string, fallback: stri
   }
 }
 
+function extractText(rawHtml: string): string {
+  return rawHtml
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, ""); // strip span tags, keep text content
+}
+
 function highlightCodeBlocks(html: string): string {
-  // Pass 1: TipTap format — <pre><code class="language-X">...</code></pre>
-  // Output uses "hljs language-X" so it won't re-match in pass 2.
+  // Pass 1: TipTap / legacy format — <pre><code class="language-X">...</code></pre>
   let result = html.replace(
     /<pre><code(?:\s+class="language-([^"]*)")?>([\s\S]*?)<\/code><\/pre>/gi,
     (match, lang: string | undefined, rawCode: string) =>
       hljsHighlight(lang, rawCode, match),
   );
 
-  // Pass 2: Lexical format with language — <code class="language-X" spellcheck="false">...</code>.
-  // Only matches class="language-..." (not "hljs language-..." already handled above).
+  // Pass 2: Lexical format — <pre spellcheck="false" [data-language="X"]>...</pre>
+  // CodeNode.exportDOM produces a <pre> with spellcheck="false" and an optional
+  // data-language attribute. Children are <span> text nodes and <br> line breaks.
   result = result.replace(
-    /<code\b[^>]*\bclass="language-([^"]*)"[^>]*>([\s\S]*?)<\/code>/gi,
-    (match, lang: string, rawCode: string) =>
-      hljsHighlight(lang, rawCode, match),
-  );
-
-  // Pass 3: Lexical format without language — <code spellcheck="false">...</code>.
-  // Applies auto-detection and wraps in <pre> so it renders as a block.
-  result = result.replace(
-    /<code\b[^>]*\bspellcheck="false"[^>]*>([\s\S]*?)<\/code>/gi,
-    (match, rawCode: string) => hljsHighlight(undefined, rawCode, match),
+    /<pre\b[^>]*\bspellcheck="false"[^>]*>([\s\S]*?)<\/pre>/gi,
+    (match, rawHtml: string) => {
+      const langMatch = match.match(/\bdata-language="([^"]*)"/i);
+      const lang = langMatch?.[1] || undefined;
+      return hljsHighlight(lang, extractText(rawHtml), match);
+    },
   );
 
   return result;
