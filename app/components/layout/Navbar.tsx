@@ -67,8 +67,24 @@ export function Navbar() {
 
         <div className="flex-1" />
 
-        {/* Desktop theme toggle */}
-        <div className="hidden md:flex items-center border-l border-border pl-6 ml-6">
+        {/* Desktop utils */}
+        <div className="hidden md:flex items-center gap-0 border-l border-border pl-6 ml-6">
+          {/* Language toggle — buttons wired up when i18n is implemented */}
+          <div className="flex">
+            <button
+              className="font-mono text-[0.68rem] tracking-[0.1em] uppercase text-brand font-medium px-2 py-1.5 transition-colors"
+              aria-label="Switch to English"
+            >
+              EN
+            </button>
+            <button
+              className="font-mono text-[0.68rem] tracking-[0.1em] uppercase text-muted-foreground px-2 py-1.5 hover:text-brand transition-colors"
+              aria-label="Switch to Italian"
+            >
+              IT
+            </button>
+          </div>
+          <div className="w-px h-4 bg-border mx-3" aria-hidden="true" />
           <ThemeToggle />
         </div>
 
@@ -105,8 +121,32 @@ export function Navbar() {
                 </Link>
               ))}
             </nav>
-            <div className="mt-auto">
-              <ThemeToggle />
+            <div className="mt-auto flex flex-col gap-4">
+              <div>
+                <p className="font-mono text-[0.62rem] tracking-[0.14em] uppercase text-muted-foreground mb-2">
+                  Language
+                </p>
+                <div className="flex gap-1">
+                  <button
+                    className="font-mono text-[0.68rem] tracking-[0.1em] uppercase text-brand font-medium px-2 py-1.5 transition-colors"
+                    aria-label="Switch to English"
+                  >
+                    EN
+                  </button>
+                  <button
+                    className="font-mono text-[0.68rem] tracking-[0.1em] uppercase text-muted-foreground px-2 py-1.5 hover:text-brand transition-colors"
+                    aria-label="Switch to Italian"
+                  >
+                    IT
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p className="font-mono text-[0.62rem] tracking-[0.14em] uppercase text-muted-foreground mb-2">
+                  Theme
+                </p>
+                <ThemeToggle />
+              </div>
             </div>
           </SheetContent>
         </Sheet>

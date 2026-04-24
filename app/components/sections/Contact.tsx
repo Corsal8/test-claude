@@ -54,7 +54,7 @@ export function Contact() {
       <div className="mx-auto max-w-[1200px]">
         <div className="mb-16" data-reveal>
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
-            05 — Contact
+            06 — Contact
           </span>
         </div>
 

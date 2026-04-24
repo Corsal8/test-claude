@@ -1,61 +1,95 @@
-import { ArrowRight } from "lucide-react";
 import { href, Link } from "react-router";
-import { Button } from "~/components/ui/button";
 import type { Post } from "~/db/schema";
 
 interface BlogPreviewProps {
   posts: Post[];
 }
 
+function formatDate(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
 export function BlogPreview({ posts }: BlogPreviewProps) {
+  const visible = posts.slice(0, 3);
+
   return (
-    <section id="blog" className="bg-muted/30 px-4 py-24">
-      <div className="container mx-auto max-w-4xl">
-        <div className="mb-12 flex items-center justify-between">
-          <h2 className="font-mono text-3xl font-bold">
-            <span className="text-sky-400">// </span>From the Blog
+    <section id="blog" className="py-28 px-10">
+      <div className="mx-auto max-w-[1200px]">
+        <div className="mb-16" data-reveal>
+          <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-muted-foreground">
+            05 — Writing
+          </span>
+          <h2 className="font-display font-extrabold text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] tracking-[-0.03em] mt-3">
+            From the Blog
           </h2>
-          <Button asChild variant="ghost" size="sm">
-            <Link to={href("/blog")}>
-              All posts <ArrowRight className="size-4" />
-            </Link>
-          </Button>
         </div>
 
-        {posts.length === 0 ? (
-          <div className="rounded-lg border border-dashed p-12 text-center">
-            <p className="font-mono text-muted-foreground">
+        {visible.length === 0 ? (
+          <div
+            className="border border-dashed border-border py-16 flex flex-col items-center gap-2 text-center"
+            data-reveal
+            data-reveal-delay="1"
+          >
+            <p className="font-mono text-[0.75rem] tracking-[0.12em] uppercase text-muted-foreground">
               Posts coming soon.
             </p>
-            <p className="mt-2 text-sm text-muted-foreground">Stay tuned.</p>
+            <p className="text-sm text-muted-foreground">Stay tuned.</p>
           </div>
         ) : (
-          <ul className="space-y-3">
-            {posts.slice(0, 3).map((post) => (
-              <li key={post.id}>
+          <>
+            <div
+              className="grid grid-cols-1 sm:grid-cols-3 border border-border"
+              data-reveal
+              data-reveal-delay="1"
+            >
+              {visible.map((post) => (
                 <Link
+                  key={post.id}
                   to={href("/blog/:slug", { slug: post.slug })}
-                  className="group flex items-start justify-between rounded-lg border p-4 transition-colors hover:bg-accent"
+                  className="group flex flex-col gap-4 p-8 border-b border-border sm:border-b-0 sm:border-r sm:last:border-r-0 hover:bg-muted/50 transition-colors duration-200 cursor-pointer"
                 >
-                  <div>
-                    <p className="font-medium transition-colors group-hover:text-sky-400">
-                      {post.title}
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {post.description}
-                    </p>
+                  {/* Meta row */}
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-[0.65rem] tracking-[0.08em] text-muted-foreground">
+                      {formatDate(post.createdAt)}
+                    </span>
                   </div>
-                  <time className="ml-4 mt-1 shrink-0 text-xs text-muted-foreground">
-                    {post.createdAt.toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </time>
+
+                  {/* Title */}
+                  <p className="font-display font-bold text-[1.05rem] leading-[1.3] group-hover:text-brand transition-colors">
+                    {post.title}
+                  </p>
+
+                  {/* Excerpt */}
+                  <p className="text-[0.88rem] leading-[1.65] text-muted-foreground flex-1">
+                    {post.description}
+                  </p>
+
+                  {/* Read link */}
+                  <span className="font-mono text-[0.68rem] tracking-[0.06em] uppercase text-muted-foreground border-b border-border pb-px self-start group-hover:text-brand group-hover:border-brand transition-all">
+                    Read post →
+                  </span>
                 </Link>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
+
+            <div
+              className="flex justify-end mt-10"
+              data-reveal
+              data-reveal-delay="2"
+            >
+              <Link
+                to={href("/blog")}
+                className="font-mono text-[0.75rem] tracking-[0.08em] uppercase px-6 py-3 rounded-[2px] border border-border-strong text-foreground hover:border-brand hover:text-brand transition-all"
+              >
+                All posts ↗
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </section>
